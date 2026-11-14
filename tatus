@@ -1,0 +1,15 @@
+  main[m
+  module/admin[m
+* [32mmodule/booking[m
+  module/cafe[m
+  module/inventory[m
+  module/payment[m
+  module/user[m
+  [31mremotes/origin/HEAD[m -> origin/main
+  [31mremotes/origin/main[m
+  [31mremotes/origin/module/admin[m
+  [31mremotes/origin/module/booking[m
+  [31mremotes/origin/module/cafe[m
+  [31mremotes/origin/module/inventory[m
+  [31mremotes/origin/module/payment[m
+  [31mremotes/origin/module/user[m
