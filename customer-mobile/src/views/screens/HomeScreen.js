@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   View,
@@ -72,37 +71,48 @@ const HomeScreen = ({ navigation }) => {
   } = useHomeViewModel();
 
   const goTo = (screenName) => {
-    if (screenName === 'Home') return;
+  if (screenName === 'Bookings') {
+    navigation.navigate('PodDetails');
+    return;
+  }
 
-    const routeNames =
-      navigation?.getState?.()?.routeNames || [];
+  const routeNames = navigation.getState()?.routeNames || [];
 
-    if (routeNames.includes(screenName)) {
-      navigation.navigate(screenName);
-    } else {
-      console.log(`${screenName} screen is not connected yet`);
-    }
+  if (routeNames.includes(screenName)) {
+    navigation.navigate(screenName);
+  }
+};
+
+  
+const handleContinue = () => {
+  if (!selectedSlotIsValid) {
+    Alert.alert(
+      'Select a time slot',
+      'Please select a valid available start time.'
+    );
+
+    setShowTimePicker(true);
+    return;
+  }
+
+  const bookings = {
+    selectedPod: pod,
+    selectedPodId: pod?.id || null,
+
+    selectedDate: formatDate(selectedDate),
+    selectedTime: formatTime(selectedTime),
+
+    duration,
+    bookingType,
+    totalPrice,
+
+    endTime: formatTime(endTime),
+    cleaningEndTime: formatTime(cleaningEndTime),
   };
 
-  const handleContinue = () => {
-    if (!selectedSlotIsValid) {
-      Alert.alert(
-        'Select a time slot',
-        'Please select a valid available start time.'
-      );
+  navigation.navigate('Bookings', bookings);
+};
 
-      setShowTimePicker(true);
-      return;
-    }
-
-    navigation.navigate('Booking', {
-      selectedDate: formatDate(selectedDate),
-      selectedTime: formatTime(selectedTime),
-      duration,
-      bookingType,
-      totalPrice,
-    });
-  };
 
   return (
     <SafeAreaView
