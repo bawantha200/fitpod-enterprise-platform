@@ -32,10 +32,14 @@ const Header = () => {
       <Link
         to="/"
         onClick={closeMobileMenu}
-        className="inline-flex items-center text-[32px] font-semibold tracking-[-2px] text-white"
-      >
-        fitpod
-      </Link>
+        className="inline-flex items-center"
+        >
+        <img
+            src="/images/fitpod-logo.jpg"
+            alt="FitPod Logo"
+            className="h-12 w-12 rounded-full border-2 border-[#B6FF00] object-cover"
+        />
+        </Link>
 
       {/* NAVIGATION */}
       <nav
