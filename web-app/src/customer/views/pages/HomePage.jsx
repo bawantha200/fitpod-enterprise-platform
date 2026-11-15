@@ -27,6 +27,7 @@ const COLORS = {
   muted: '#A0A0A0',
   lightGrey: '#D8D8D8',
   olive: '#263018',
+  yellow: '#ffc400'
 };
 
 const features = [
