@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import {
   View,
@@ -71,53 +72,42 @@ const HomeScreen = ({ navigation }) => {
   } = useHomeViewModel();
 
   const goTo = (screenName) => {
-  if (screenName === 'Bookings') {
-    navigation.navigate('PodDetails');
-    return;
-  }
+    if (screenName === 'Home') return;
 
-  const routeNames = navigation.getState()?.routeNames || [];
+    const routeNames =
+      navigation?.getState?.()?.routeNames || [];
 
-  if (routeNames.includes(screenName)) {
-    navigation.navigate(screenName);
-  }
-};
-
-  
-const handleContinue = () => {
-  if (!selectedSlotIsValid) {
-    Alert.alert(
-      'Select a time slot',
-      'Please select a valid available start time.'
-    );
-
-    setShowTimePicker(true);
-    return;
-  }
-
-  const bookings = {
-    selectedPod: pod,
-    selectedPodId: pod?.id || null,
-
-    selectedDate: formatDate(selectedDate),
-    selectedTime: formatTime(selectedTime),
-
-    duration,
-    bookingType,
-    totalPrice,
-
-    endTime: formatTime(endTime),
-    cleaningEndTime: formatTime(cleaningEndTime),
+    if (routeNames.includes(screenName)) {
+      navigation.navigate(screenName);
+    } else {
+      console.log(`${screenName} screen is not connected yet`);
+    }
   };
 
-  navigation.navigate('Bookings', bookings);
-};
+  const handleContinue = () => {
+    if (!selectedSlotIsValid) {
+      Alert.alert(
+        'Select a time slot',
+        'Please select a valid available start time.'
+      );
 
+      setShowTimePicker(true);
+      return;
+    }
+
+    navigation.navigate('Booking', {
+      selectedDate: formatDate(selectedDate),
+      selectedTime: formatTime(selectedTime),
+      duration,
+      bookingType,
+      totalPrice,
+    });
+  };
 
   return (
     <SafeAreaView
       style={styles.safeArea}
-      edges={['top', 'left', 'right', 'bottom']}
+      edges={['top', 'left', 'right']}
     >
       <StatusBar
         barStyle="light-content"
@@ -646,36 +636,7 @@ const handleContinue = () => {
           </Text>
         </ScrollView>
 
-        {/* Bottom Navigation */}
-        <View style={styles.bottomNavigation}>
-          {navItems.map((item) => {
-            const Icon = item.icon;
-
-            return (
-              <TouchableOpacity
-                key={item.name}
-                style={styles.navItem}
-                onPress={() => goTo(item.name)}
-                activeOpacity={0.8}
-              >
-                <Icon
-                  size={21}
-                  color={item.active ? GREEN : WHITE}
-                  strokeWidth={1.8}
-                />
-
-                <Text
-                  style={[
-                    styles.navLabel,
-                    item.active && styles.navLabelActive,
-                  ]}
-                >
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+        
       </View>
     </SafeAreaView>
   );
