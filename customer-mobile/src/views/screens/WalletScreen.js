@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   View,
@@ -20,7 +21,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import AddMoneyModal from '../components/AddMoneyModal';
 import useWalletViewModel from '../../viewmodels/useWalletViewModel';
-import styles from '../styles/WalletScreen.styles';
 
 const GREEN = '#B6FF00';
 const BACKGROUND = '#000000';
@@ -54,33 +54,36 @@ const WalletScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView
-      style={styles.safeArea}
+      style={{ flex: 1, backgroundColor: BACKGROUND }}
       edges={['top', 'left', 'right']}
     >
       <StatusBar barStyle="light-content" backgroundColor={BACKGROUND} />
 
-      <View style={styles.screen}>
+      <View className="flex-1 bg-black">
         <ScrollView
+          style={{ flex: 1, backgroundColor: BACKGROUND }}
+          contentContainerStyle={{ paddingBottom: 32 }}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
         >
           {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.logoRow}>
-              <Text style={styles.logo}>FitPod</Text>
-              <View style={styles.logoDot} />
+          <View className="flex-row items-center justify-between px-6 pt-4">
+            <View className="flex-row items-center">
+              <Text className="text-[28px] font-extrabold tracking-tight text-white">
+                FitPod
+              </Text>
+              <View className="ml-1.5 h-2 w-2 rounded-full bg-[#B6FF00]" />
             </View>
 
-            <View style={styles.headerActions}>
+            <View className="flex-row items-center gap-4">
               <TouchableOpacity
-                style={styles.headerButton}
+                className="h-10 w-10 items-center justify-center rounded-full bg-[#1A1A1A]"
                 onPress={() => console.log('Notifications coming soon')}
               >
                 <Bell size={21} color={WHITE} strokeWidth={1.8} />
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.headerButton}
+                className="h-10 w-10 items-center justify-center rounded-full bg-[#1A1A1A]"
                 onPress={() => goTo('Profile')}
               >
                 <UserRound size={21} color={WHITE} strokeWidth={1.8} />
@@ -89,56 +92,80 @@ const WalletScreen = ({ navigation }) => {
           </View>
 
           {/* Greeting */}
-          <View style={styles.greeting}>
-            <Text style={styles.title}>Your wallet.</Text>
-            <Text style={styles.subtitle}>
+          <View className="px-6 pb-6 pt-9">
+            <Text className="text-[32px] font-extrabold text-white">
+              Your wallet.
+            </Text>
+
+            <Text className="mt-2 text-sm text-gray-400">
               {userName}, everything in one place.
             </Text>
           </View>
 
           {/* Balance Card */}
-          <View style={styles.balanceCard}>
-            <View style={styles.balanceTopRow}>
-              <Text style={styles.balanceLabel}>AVAILABLE BALANCE</Text>
+          <View className="mx-6 rounded-[24px] bg-[#B6FF00] p-6">
+            <View className="flex-row items-center justify-between">
+              <Text className="text-xs font-bold tracking-[2px] text-black">
+                AVAILABLE BALANCE
+              </Text>
+
               <Wallet size={22} color={BACKGROUND} strokeWidth={1.8} />
             </View>
 
-            <Text style={styles.balanceAmount}>{formatPrice(balance)}</Text>
+            <Text className="mt-6 text-[36px] font-extrabold text-black">
+              {formatPrice(balance)}
+            </Text>
 
-            <Text style={styles.balanceMeta}>LKR · Updated {updatedAt}</Text>
+            <Text className="mt-2 text-xs font-medium text-black/60">
+              LKR · Updated {updatedAt}
+            </Text>
           </View>
 
           {/* Add Money */}
           <TouchableOpacity
-            style={styles.addMoneyButton}
+            className="mx-6 mt-5 flex-row items-center justify-center rounded-2xl bg-white py-4"
             onPress={handleAddMoney}
             activeOpacity={0.85}
           >
-            <Text style={styles.addMoneyText}>Add Money</Text>
+            <Text className="mr-2 text-base font-bold text-black">
+              Add Money
+            </Text>
+
             <Plus size={18} color={BACKGROUND} strokeWidth={2.4} />
           </TouchableOpacity>
 
           {/* Recent Transactions */}
-          <View style={styles.sectionHeadingRow}>
-            <Text style={styles.sectionTitle}>Recent transactions</Text>
+          <View className="mb-4 mt-9 flex-row items-center justify-between px-6">
+            <Text className="text-lg font-bold text-white">
+              Recent transactions
+            </Text>
 
             <TouchableOpacity onPress={handleViewHistory}>
-              <Text style={styles.viewAll}>All history</Text>
+              <Text className="text-sm font-semibold text-[#B6FF00]">
+                All history
+              </Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.transactionsCard}>
+          {/* Transactions Card */}
+          <View className="mx-6 rounded-[20px] border border-[#262626] bg-[#111111] p-4">
             {transactions.map((item, index) => {
               const isCredit = item.type === 'credit';
               const Icon = isCredit ? ArrowDownLeft : ArrowUpRight;
 
               return (
                 <React.Fragment key={item.id}>
-                  {index > 0 && <View style={styles.divider} />}
+                  {index > 0 && (
+                    <View className="my-4 h-px bg-[#292929]" />
+                  )}
 
-                  <View style={styles.transaction}>
-                    <View style={styles.transactionTopRow}>
-                      <View style={styles.transactionIcon}>
+                  <View>
+                    <View className="flex-row items-center">
+                      <View
+                        className={`mr-3 h-11 w-11 items-center justify-center rounded-full ${
+                          isCredit ? 'bg-[#B6FF00]/10' : 'bg-[#262626]'
+                        }`}
+                      >
                         <Icon
                           size={18}
                           color={isCredit ? GREEN : WHITE}
@@ -146,35 +173,35 @@ const WalletScreen = ({ navigation }) => {
                         />
                       </View>
 
-                      <View style={styles.transactionTextWrap}>
-                        <Text style={styles.transactionTitle}>
+                      <View className="flex-1">
+                        <Text className="text-sm font-bold text-white">
                           {item.title}
                         </Text>
-                        <Text style={styles.transactionDate}>
+
+                        <Text className="mt-1 text-xs text-gray-500">
                           {item.date}
                         </Text>
                       </View>
 
                       <Text
-                        style={
-                          isCredit
-                            ? styles.amountCredit
-                            : styles.amountDebit
-                        }
+                        className={`text-sm font-bold ${
+                          isCredit ? 'text-[#B6FF00]' : 'text-white'
+                        }`}
                       >
                         {isCredit ? '+' : '−'} {formatPrice(item.amount)}
                       </Text>
                     </View>
 
-                    <Text style={styles.transactionReference}>
+                    <Text className="ml-14 mt-2 text-[11px] text-gray-500">
                       {item.id} · {item.status}
                     </Text>
 
-                    <View style={styles.balanceAfterRow}>
-                      <Text style={styles.balanceAfterLabel}>
+                    <View className="ml-14 mt-3 flex-row items-center justify-between">
+                      <Text className="text-[11px] text-gray-500">
                         Balance after transaction
                       </Text>
-                      <Text style={styles.balanceAfterValue}>
+
+                      <Text className="text-xs font-semibold text-gray-300">
                         {formatPrice(item.balanceAfter)}
                       </Text>
                     </View>
@@ -184,8 +211,10 @@ const WalletScreen = ({ navigation }) => {
             })}
           </View>
 
-          <Text style={styles.openingBalance}>
-            Opening balance before {openingDate}: {formatPrice(openingBalance)}
+          {/* Opening Balance */}
+          <Text className="mx-6 mt-5 text-center text-xs leading-5 text-gray-500">
+            Opening balance before {openingDate}:{' '}
+            {formatPrice(openingBalance)}
           </Text>
         </ScrollView>
       </View>
