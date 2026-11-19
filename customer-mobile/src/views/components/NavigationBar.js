@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import {
   Home,
   CalendarDays,
@@ -14,7 +15,6 @@ const BACKGROUND = '#000000';
 const BORDER = '#303030';
 const WHITE = '#FFFFFF';
 
-// key = tab route name
 const ICONS = {
   Home,
   Bookings: CalendarDays,
@@ -23,15 +23,18 @@ const ICONS = {
   Profile: User,
 };
 
-const BottomTabBar = ({ state, navigation }) => {
+const NavigationBar = ({ state, navigation }) => {
   const insets = useSafeAreaInsets();
 
   return (
     <View
-      style={[
-        styles.container,
-        { paddingBottom: insets.bottom },
-      ]}
+      className="flex-row border-t px-1"
+      style={{
+        backgroundColor: BACKGROUND,
+        borderTopColor: BORDER,
+        paddingBottom: insets.bottom,
+        borderTopWidth: 1,
+      }}
     >
       {state.routes.map((route, index) => {
         const focused = state.index === index;
@@ -52,7 +55,7 @@ const BottomTabBar = ({ state, navigation }) => {
         return (
           <TouchableOpacity
             key={route.key}
-            style={styles.item}
+            className="flex-1 h-[62px] items-center justify-center"
             onPress={onPress}
             activeOpacity={0.8}
           >
@@ -64,7 +67,13 @@ const BottomTabBar = ({ state, navigation }) => {
               />
             )}
 
-            <Text style={[styles.label, focused && styles.labelActive]}>
+            <Text
+              className="text-[10px] mt-[5px]"
+              style={{
+                color: focused ? GREEN : WHITE,
+                fontWeight: focused ? '600' : '400',
+              }}
+            >
               {route.name}
             </Text>
           </TouchableOpacity>
@@ -74,33 +83,4 @@ const BottomTabBar = ({ state, navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    backgroundColor: BACKGROUND,
-    borderTopWidth: 1,
-    borderTopColor: BORDER,
-    paddingHorizontal: 4,
-  },
-
-  item: {
-    flex: 1,
-    height: 62,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-  },
-
-  label: {
-    color: WHITE,
-    fontSize: 10,
-    fontWeight: '400',
-  },
-
-  labelActive: {
-    color: GREEN,
-    fontWeight: '600',
-  },
-});
-
-export default BottomTabBar;
+export default NavigationBar;

@@ -3,11 +3,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 // Shared bottom nav bar
-import BottomTabBar from '../views/components/BottomTabBar';
+import Navbar from '../views/components/NavigationBar';
 
 // Screens
 import HomeScreen from '../views/screens/HomeScreen';
 import BookingScreen from '../views/screens/BookingScreen';
+import PodDetailsScreen from '../views/screens/PodDetailsScreen';
+import GroupInvitationScreen from '../views/screens/GroupInvitationScreen';
+import PaymentScreen from '../views/screens/PaymentScreen';
 import WalletScreen from '../views/screens/WalletScreen';
 import ReviewPaymentScreen from '../views/screens/ReviewPaymentScreen';
 import PaymentSuccessScreen from '../views/screens/PaymentSuccessScreen';
@@ -20,7 +23,7 @@ const MainTabs = () => {
   return (
     <Tab.Navigator
       initialRouteName="Home"
-      tabBar={(props) => <BottomTabBar {...props} />}
+      tabBar={(props) => <Navbar {...props} />}
       screenOptions={{
         headerShown: false,
       }}
@@ -30,10 +33,14 @@ const MainTabs = () => {
         component={HomeScreen}
       />
 
-      {/* Add these later when the screens are ready:
-      <Tab.Screen name="Bookings" component={BookingsScreen} />
-      <Tab.Screen name="Cafe" component={CafeScreen} />
-      */}
+      {/* Add these later when the screens are ready: */}
+      <Tab.Screen 
+      name="Bookings" 
+      component={PodDetailsScreen} 
+      />
+
+      {/* <Tab.Screen name="Cafe" component={CafeScreen} /> */}
+     
 
       <Tab.Screen
         name="Wallet"
@@ -58,10 +65,25 @@ const AppNavigator = () => {
         component={MainTabs}
       />
 
+      <Stack.Screen
+        name="PodDetials"
+        component={PodDetailsScreen}
+      />
+
       {/* Opens on top of the tabs (no bottom nav bar) */}
       <Stack.Screen
         name="Booking"
         component={BookingScreen}
+      />
+
+      <Stack.Screen
+        name="GroupInvitation"
+        component={GroupInvitationScreen}
+      />
+
+      <Stack.Screen
+        name="Payment"
+        component={PaymentScreen}
       />
 
       {/* Wallet top-up flow (no bottom nav bar) */}

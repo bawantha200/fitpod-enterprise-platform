@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   View,
@@ -7,16 +8,17 @@ import {
   StatusBar,
   ActivityIndicator,
 } from 'react-native';
+
 import {
   Bell,
   UserRound,
   ChevronLeft,
   Lock,
 } from 'lucide-react-native';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import useReviewPaymentViewModel from '../../viewmodels/useReviewPaymentViewModel';
-import styles from '../styles/ReviewPaymentScreen.styles';
 
 const BACKGROUND = '#000000';
 const WHITE = '#FFFFFF';
@@ -33,84 +35,113 @@ const ReviewPaymentScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView
-      style={styles.safeArea}
+      style={{ flex: 1, backgroundColor: BACKGROUND }}
       edges={['top', 'left', 'right', 'bottom']}
     >
       <StatusBar barStyle="light-content" backgroundColor={BACKGROUND} />
 
       {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.logoRow}>
-          <Text style={styles.logo}>FitPod</Text>
-          <View style={styles.logoDot} />
+      <View className="flex-row items-center justify-between px-6 pb-5 pt-4">
+        <View className="flex-row items-center">
+          <Text className="text-[28px] font-extrabold tracking-tight text-white">
+            FitPod
+          </Text>
+          <View className="ml-1.5 h-2 w-2 rounded-full bg-[#B6FF00]" />
         </View>
 
-        <View style={styles.headerActions}>
+        <View className="flex-row items-center gap-5">
           <Bell size={21} color={WHITE} strokeWidth={1.8} />
           <UserRound size={21} color={WHITE} strokeWidth={1.8} />
         </View>
       </View>
 
       <ScrollView
+        style={{ flex: 1, backgroundColor: BACKGROUND }}
+        contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 28 }}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}
       >
         {/* Title */}
-        <View style={styles.titleRow}>
+        <View className="mt-6 flex-row items-center">
           <TouchableOpacity
-            style={styles.backButton}
+            className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-[#1A1A1A]"
             onPress={handleBack}
             activeOpacity={0.8}
           >
             <ChevronLeft size={26} color={WHITE} strokeWidth={2} />
           </TouchableOpacity>
 
-          <Text style={styles.title}>Review payment</Text>
+          <Text className="text-[25px] font-extrabold text-white">
+            Review payment
+          </Text>
         </View>
 
-        <Text style={styles.subtitle}>One last look before you top up.</Text>
+        <Text className="mb-7 mt-3 text-sm text-gray-400">
+          One last look before you top up.
+        </Text>
 
         {/* Amount */}
-        <View style={styles.amountCard}>
-          <Text style={styles.amountLabel}>ADDING TO YOUR WALLET</Text>
+        <View className="rounded-[24px] bg-[#B6FF00] p-6">
+          <Text className="text-xs font-bold tracking-[2px] text-black/60">
+            ADDING TO YOUR WALLET
+          </Text>
 
-          <View style={styles.amountRow}>
-            <Text style={styles.amountCurrency}>Rs.</Text>
-            <Text style={styles.amountValue}>{amountText}</Text>
+          <View className="mt-5 flex-row items-baseline">
+            <Text className="mr-2 text-xl font-bold text-black">
+              Rs.
+            </Text>
+
+            <Text className="text-[38px] font-extrabold text-black">
+              {amountText}
+            </Text>
           </View>
 
-          <Text style={styles.amountMeta}>LKR · FitPod wallet</Text>
+          <Text className="mt-2 text-xs font-medium text-black/60">
+            LKR · FitPod wallet
+          </Text>
         </View>
 
         {/* Details */}
-        <View style={styles.detailsCard}>
-          <Text style={styles.detailsTitle}>Payment details</Text>
+        <View className="mt-6 rounded-[22px] border border-[#292929] bg-[#111111] p-5">
+          <Text className="mb-6 text-lg font-bold text-white">
+            Payment details
+          </Text>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Payment method</Text>
-            <Text style={styles.detailValue}>PayHere</Text>
+          <View className="flex-row items-center justify-between">
+            <Text className="text-sm text-gray-400">
+              Payment method
+            </Text>
+
+            <Text className="text-sm font-semibold text-white">
+              PayHere
+            </Text>
           </View>
 
-          <View style={styles.divider} />
+          <View className="my-5 h-px bg-[#292929]" />
 
-          <View style={styles.detailRow}>
-            <Text style={styles.totalLabel}>Total to pay</Text>
-            <Text style={styles.totalValue}>Rs. {amountText}</Text>
+          <View className="flex-row items-center justify-between">
+            <Text className="text-sm font-bold text-white">
+              Total to pay
+            </Text>
+
+            <Text className="text-base font-extrabold text-[#B6FF00]">
+              Rs. {amountText}
+            </Text>
           </View>
         </View>
 
-        <Text style={styles.note}>
+        <Text className="mt-5 text-center text-xs leading-5 text-gray-500">
           Your wallet is credited after payment is confirmed.
         </Text>
       </ScrollView>
 
       {/* Footer */}
-      <View style={styles.footer}>
+      <View className="border-t border-[#222222] bg-black px-6 pb-5 pt-4">
         <TouchableOpacity
-          style={[
-            styles.confirmButton,
-            (isProcessing || amount <= 0) && styles.confirmButtonDisabled,
-          ]}
+          className={`flex-row items-center justify-center rounded-2xl py-4 ${
+            isProcessing || amount <= 0
+              ? 'bg-[#B6FF00]/40'
+              : 'bg-[#B6FF00]'
+          }`}
           onPress={handleConfirm}
           disabled={isProcessing || amount <= 0}
           activeOpacity={0.85}
@@ -119,13 +150,16 @@ const ReviewPaymentScreen = ({ navigation, route }) => {
             <ActivityIndicator color={BACKGROUND} />
           ) : (
             <>
-              <Text style={styles.confirmText}>Confirm Payment</Text>
+              <Text className="mr-2 text-base font-extrabold text-black">
+                Confirm Payment
+              </Text>
+
               <Lock size={18} color={BACKGROUND} strokeWidth={2} />
             </>
           )}
         </TouchableOpacity>
 
-        <Text style={styles.footnote}>
+        <Text className="mt-3 text-center text-[11px] text-gray-500">
           {isDemoMode
             ? 'Demo checkout · No money will be charged.'
             : 'Secure checkout · Processed by PayHere'}
