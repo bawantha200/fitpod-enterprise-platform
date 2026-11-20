@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -6,6 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Navbar from '../views/components/NavigationBar';
 
 // Screens
+import LoginScreen from '../views/screens/LoginScreen';
 import HomeScreen from '../views/screens/HomeScreen';
 import BookingScreen from '../views/screens/BookingScreen';
 import PodDetailsScreen from '../views/screens/PodDetailsScreen';
@@ -18,7 +20,7 @@ import PaymentSuccessScreen from '../views/screens/PaymentSuccessScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Screens that share the bottom nav bar (order = tab bar order)
+// Main screens with bottom navigation
 const MainTabs = () => {
   return (
     <Tab.Navigator
@@ -33,33 +35,35 @@ const MainTabs = () => {
         component={HomeScreen}
       />
 
-      {/* Add these later when the screens are ready: */}
-      <Tab.Screen 
-      name="Bookings" 
-      component={PodDetailsScreen} 
+      <Tab.Screen
+        name="Bookings"
+        component={PodDetailsScreen}
       />
-
-      {/* <Tab.Screen name="Cafe" component={CafeScreen} /> */}
-     
 
       <Tab.Screen
         name="Wallet"
         component={WalletScreen}
       />
-
-      {/* <Tab.Screen name="Profile" component={ProfileScreen} /> */}
     </Tab.Navigator>
   );
 };
 
+// Main application navigation
 const AppNavigator = () => {
   return (
     <Stack.Navigator
-      initialRouteName="MainTabs"
+      initialRouteName="Login"
       screenOptions={{
         headerShown: false,
       }}
     >
+      {/* Login screen - first screen when app opens */}
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+      />
+
+      {/* Main application with bottom navigation */}
       <Stack.Screen
         name="MainTabs"
         component={MainTabs}
@@ -70,7 +74,6 @@ const AppNavigator = () => {
         component={PodDetailsScreen}
       />
 
-      {/* Opens on top of the tabs (no bottom nav bar) */}
       <Stack.Screen
         name="Booking"
         component={BookingScreen}
@@ -86,7 +89,6 @@ const AppNavigator = () => {
         component={PaymentScreen}
       />
 
-      {/* Wallet top-up flow (no bottom nav bar) */}
       <Stack.Screen
         name="ReviewPayment"
         component={ReviewPaymentScreen}
@@ -95,7 +97,9 @@ const AppNavigator = () => {
       <Stack.Screen
         name="PaymentSuccess"
         component={PaymentSuccessScreen}
-        options={{ gestureEnabled: false }}
+        options={{
+          gestureEnabled: false,
+        }}
       />
     </Stack.Navigator>
   );

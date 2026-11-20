@@ -10,12 +10,22 @@ const errorMiddleware = require("./middleware/errorMiddleware");
 const app = express();
 
 // Common middleware
-app.use(cors());
+// Common middleware
+app.use(cors({
+  origin: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
+app.options(/.*/, cors());
+
 app.use(express.json());
+
 app.use((req, res, next) => {
   console.log(req.method, req.originalUrl);
   next();
 });
+
 app.use(express.urlencoded({ extended: true }));
 
 // Welcome route
