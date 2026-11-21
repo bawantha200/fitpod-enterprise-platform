@@ -1,15 +1,16 @@
+
 const express = require("express");
 const cors = require("cors");
 const pool = require("./config/db");
 
 const walletRoutes = require("./routes/walletRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const notFoundMiddleware = require("./middleware/notFoundMiddleware");
 const errorMiddleware = require("./middleware/errorMiddleware");
 
 const app = express();
 
-// Common middleware
 // Common middleware
 app.use(cors({
   origin: true,
@@ -55,6 +56,7 @@ app.get("/api/health", async (req, res, next) => {
 
 // API routes
 app.use("/api/wallet", walletRoutes);
+app.use("/api/auth", authRoutes);
 
 // Error handling (keep these at the bottom)
 app.use(notFoundMiddleware);
