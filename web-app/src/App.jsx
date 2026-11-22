@@ -8,7 +8,7 @@ import OurPodPage from './customer/views/pages/OurPodPage';
 import ContactUsPage from './customer/views/pages/ContactUsPage';
 import FAQPage from './customer/views/pages/FAQPage';
 import CafePage from './customer/views/pages/CafePage';
-
+import CafeRoutes from './cafe/CafeRoutes';
 
 function App() {
   return (
@@ -21,6 +21,7 @@ function App() {
         <Route path="/contact" element={<ContactUsPage />} />
         <Route path="/faq" element={<FAQPage />} />
         <Route path="/cafe" element={<CafePage />} />
+        <Route path="/cafe-portal/*" element={<CafeRoutes />} />
       </Routes>
     </BrowserRouter>
   );
