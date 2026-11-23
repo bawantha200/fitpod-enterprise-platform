@@ -51,6 +51,11 @@ export const ORDER_SOURCE_LABELS = {
   [ORDER_SOURCE.WALK_IN]: 'Walk-in',
 };
 
+/** Limits shared by the screens and the service. */
+export const MAX_QUANTITY_PER_ITEM = 20;
+export const MAX_NOTE_LENGTH = 200;
+export const MAX_CUSTOMER_NAME_LENGTH = 40;
+
 /** Statuses that still need work from the staff ("incoming" orders). */
 export const ACTIVE_STATUSES = [
   ORDER_STATUS.PENDING,

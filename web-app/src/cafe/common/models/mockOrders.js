@@ -44,7 +44,7 @@ export function createMockOrders() {
       history: [{ status: ORDER_STATUS.PENDING, at: minutesAgo(9), note: 'Order placed from the mobile app' }],
     }),
     buildOrder({
-      id: 'o1040', orderNumber: '1040', source: ORDER_SOURCE.WALK_IN, customerName: 'Walk-in customer',
+      id: 'o1040', orderNumber: '1040', source: ORDER_SOURCE.WALK_IN, customerName: 'Amila Rathnayake',
       status: ORDER_STATUS.ACCEPTED,
       items: [{ ...GREEN_ENERGY, quantity: 1 }],
       history: [
@@ -75,7 +75,7 @@ export function createMockOrders() {
     }),
     // The two below are NOT "incoming" - they will appear in Order History later.
     buildOrder({
-      id: 'o1037', orderNumber: '1037', source: ORDER_SOURCE.WALK_IN, customerName: 'Walk-in customer',
+      id: 'o1037', orderNumber: '1037', source: ORDER_SOURCE.WALK_IN, customerName: 'Sanduni Perera',
       status: ORDER_STATUS.COMPLETED,
       items: [{ ...ORANGE_BOOST, quantity: 1 }],
       history: [

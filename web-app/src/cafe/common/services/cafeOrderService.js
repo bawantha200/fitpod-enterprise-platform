@@ -13,7 +13,17 @@
  * ------------------------------------------------------------------
  */
 import { createMockOrders } from '../models/mockOrders';
-import { ACTIVE_STATUSES, ORDER_STATUS, canTransition } from '../models/cafeOrder';
+import {
+  ACTIVE_STATUSES,
+  MAX_CUSTOMER_NAME_LENGTH,
+  MAX_NOTE_LENGTH,
+  MAX_QUANTITY_PER_ITEM,
+  ORDER_SOURCE,
+  ORDER_STATUS,
+  calculateOrderTotal,
+  canTransition,
+} from '../models/cafeOrder';
+import { findMenuItemById } from './cafeMenuService';
 
 const FAKE_DELAY_MS = 300;
 
@@ -48,6 +58,63 @@ const cafeOrderService = {
       .filter((o) => ACTIVE_STATUSES.includes(o.status))
       .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     return copy(incoming);
+  },
+
+  /**
+   * Staff creates an order for a customer standing at the counter.
+   * `items` is a list of { menuItemId, quantity }. A customer name is
+   * REQUIRED (so we know who the order is for); notes are optional.
+   * The PRICES come from the menu here (never from the screen) and the
+   * total is calculated here too. A walk-in order starts as "accepted",
+   * because the staff member is already serving the customer.
+   */
+  async createWalkInOrder({ items, notes = '', customerName = '' }) {
+    await wait();
+
+    if (!Array.isArray(items) || items.length === 0) {
+      throw new Error('Add at least one item to the order.');
+    }
+    if (new Set(items.map((i) => i.menuItemId)).size !== items.length) {
+      throw new Error('Each item can only appear once. Change its quantity instead.');
+    }
+    const cleanNotes = notes.trim();
+    const cleanName = customerName.trim();
+    if (!cleanName) throw new Error('Please enter the customer name.');
+    if (cleanNotes.length > MAX_NOTE_LENGTH) throw new Error(`Notes can be at most ${MAX_NOTE_LENGTH} characters.`);
+    if (cleanName.length > MAX_CUSTOMER_NAME_LENGTH) {
+      throw new Error(`The customer name can be at most ${MAX_CUSTOMER_NAME_LENGTH} characters.`);
+    }
+
+    const orderItems = items.map(({ menuItemId, quantity }) => {
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > MAX_QUANTITY_PER_ITEM) {
+        throw new Error(`Each quantity must be a whole number from 1 to ${MAX_QUANTITY_PER_ITEM}.`);
+      }
+      const menuItem = findMenuItemById(menuItemId);
+      if (!menuItem) throw new Error('One of the items is no longer on the menu.');
+      if (!menuItem.isAvailable) throw new Error(`${menuItem.name} is currently unavailable.`);
+      return { menuItemId, name: menuItem.name, unitPrice: menuItem.price, quantity };
+    });
+
+    const now = new Date().toISOString();
+    const nextNumber = orders.reduce((max, o) => Math.max(max, Number(o.orderNumber)), 1000) + 1;
+    const order = {
+      id: `o${nextNumber}`,
+      orderNumber: String(nextNumber),
+      source: ORDER_SOURCE.WALK_IN,
+      customerName: cleanName,
+      items: orderItems,
+      notes: cleanNotes,
+      total: calculateOrderTotal(orderItems),
+      status: ORDER_STATUS.ACCEPTED,
+      rejectionReason: '',
+      createdAt: now,
+      statusHistory: [
+        { status: ORDER_STATUS.PENDING, at: now, note: 'Walk-in order created by staff' },
+        { status: ORDER_STATUS.ACCEPTED, at: now, note: '' },
+      ],
+    };
+    orders.push(order);
+    return copy(order);
   },
 
   /** Staff accepts a new order. */
