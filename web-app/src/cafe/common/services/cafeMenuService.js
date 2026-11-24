@@ -11,10 +11,21 @@
  */
 import { createMockMenu } from '../models/mockMenu';
 import { validateMenuItemInput } from '../models/cafeMenuItem';
+import { validateCategoryName } from '../models/cafeCategory';
 
 const FAKE_DELAY_MS = 300;
 
 let menu = createMockMenu();
+
+/** The highest number in a list of ids like "c1", "c2" (used to hand out new ids). */
+const highestNumber = (list) => list.reduce((max, entry) => Math.max(max, Number(entry.id.slice(1))), 0);
+
+/**
+ * Highest category number EVER used. Categories can be removed, so we
+ * remember it separately: a removed category's id is never handed out
+ * again (hidden menu items may still point at it).
+ */
+let lastCategoryNumber = highestNumber(menu.categories);
 
 const wait = () => new Promise((resolve) => setTimeout(resolve, FAKE_DELAY_MS));
 const copy = (value) => JSON.parse(JSON.stringify(value));
@@ -39,6 +50,18 @@ function validateOrThrow(input, editingId = null) {
   return values;
 }
 
+/** Re-checks a category name (the service never trusts the screen). Returns the cleaned name. */
+function validateCategoryOrThrow(input, editingId = null) {
+  const { error, name } = validateCategoryName(input, {
+    otherCategories: menu.categories.filter((category) => category.id !== editingId),
+  });
+  if (error) throw new Error(error);
+  return name;
+}
+
+/** How many menu items (not removed) are in a category. */
+const countActiveItems = (categoryId) => activeItems().filter((item) => item.categoryId === categoryId).length;
+
 /**
  * Looks up one menu item that is still on the menu. Used ONLY by the
  * fake order service so it can take prices from the menu. The real
@@ -55,6 +78,40 @@ const cafeMenuService = {
     return copy(menu.categories);
   },
 
+  /** Admin adds a new category. */
+  async createCategory(input) {
+    await wait();
+    const name = validateCategoryOrThrow(input);
+    lastCategoryNumber += 1;
+    const category = { id: `c${lastCategoryNumber}`, name };
+    menu.categories.push(category);
+    return copy(category);
+  },
+
+  /** Admin renames a category. Items keep belonging to it. */
+  async updateCategory(categoryId, input) {
+    await wait();
+    const category = menu.categories.find((c) => c.id === categoryId);
+    if (!category) throw new Error('This category could not be found. Please refresh the page.');
+    category.name = validateCategoryOrThrow(input, categoryId);
+    return copy(category);
+  },
+
+  /** Admin removes a category - only allowed when no menu items are in it. */
+  async removeCategory(categoryId) {
+    await wait();
+    const category = menu.categories.find((c) => c.id === categoryId);
+    if (!category) throw new Error('This category could not be found. Please refresh the page.');
+    const count = countActiveItems(categoryId);
+    if (count > 0) {
+      throw new Error(
+        `"${category.name}" still has ${count} menu ${count === 1 ? 'item' : 'items'}. Move or remove ${count === 1 ? 'it' : 'them'} first.`
+      );
+    }
+    menu.categories = menu.categories.filter((c) => c.id !== categoryId);
+    return { id: categoryId };
+  },
+
   /** All menu items that are on the menu, including unavailable ones (shown greyed out). */
   async getMenuItems() {
     await wait();
@@ -65,8 +122,7 @@ const cafeMenuService = {
   async createMenuItem(input) {
     await wait();
     const values = validateOrThrow(input);
-    const nextNumber = menu.items.reduce((max, item) => Math.max(max, Number(item.id.slice(1))), 0) + 1;
-    const item = { id: `m${nextNumber}`, ...values, isRemoved: false };
+    const item = { id: `m${highestNumber(menu.items) + 1}`, ...values, isRemoved: false };
     menu.items.push(item);
     return copy(item);
   },
@@ -97,6 +153,7 @@ const cafeMenuService = {
   /** For automated tests only: puts the fake data back to its start. */
   resetMockData() {
     menu = createMockMenu();
+    lastCategoryNumber = highestNumber(menu.categories);
   },
 };
 
