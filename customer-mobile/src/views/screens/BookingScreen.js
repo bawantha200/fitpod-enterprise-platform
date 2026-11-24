@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   View,
@@ -12,22 +13,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   ArrowLeft,
-  Bell,
   CalendarDays,
   Clock,
   ChevronRight,
-  Home,
-  Coffee,
-  Wallet,
-  User,
 } from 'lucide-react-native';
 
 import CustomCalendar from '../components/CustomCalendar';
 import useBookingViewModel from '../../viewmodels/useBookingViewModel';
-import styles from '../styles/BookingScreen.styles';
 
 const GREEN = '#B6FF00';
 const WHITE = '#FFFFFF';
+const MUTED = '#A0A0A0';
+const BACKGROUND = '#000000';
 
 const BookingScreen = ({ navigation, route }) => {
   const {
@@ -48,25 +45,7 @@ const BookingScreen = ({ navigation, route }) => {
     selectBookingType,
   } = useBookingViewModel();
 
-  // Bottom Navigation Items
-  const navItems = [
-    { name: 'Home', icon: Home, active: false },
-    { name: 'Bookings', icon: CalendarDays, active: true },
-    { name: 'Cafe', icon: Coffee, active: false },
-    { name: 'Wallet', icon: Wallet, active: false },
-    { name: 'Profile', icon: User, active: false },
-  ];
-
-  // Navigate Between Screens
-  const goTo = (screenName) => {
-    const routeNames = navigation?.getState?.()?.routeNames || [];
-
-    if (routeNames.includes(screenName)) {
-      navigation.navigate(screenName);
-    }
-  };
-
-  // Check Selected Time
+  // Check selected time
   const isSelectedTime = (time) => {
     if (!selectedTime || !time) return false;
 
@@ -77,84 +56,99 @@ const BookingScreen = ({ navigation, route }) => {
   };
 
   // Continue to Payment
-const handleContinue = () => {
-  if (!selectedSlotIsValid) {
-    Alert.alert(
-      'Select a Time Slot',
-      'Please select an available time slot before continuing.'
-    );
-    return;
-  }
+  const handleContinue = () => {
+    if (!selectedSlotIsValid) {
+      Alert.alert(
+        'Select a Time Slot',
+        'Please select an available time slot before continuing.'
+      );
+      return;
+    }
 
-  const bookingDetails = {
-    selectedPod: route?.params?.selectedPod,
-    selectedPodId: route?.params?.selectedPodId,
-    selectedDate: formatDate(selectedDate),
-    selectedTime: formatTime(selectedTime),
-    duration,
-    bookingType,
-    totalPrice,
+    const bookingDetails = {
+      selectedPod: route?.params?.selectedPod,
+      selectedPodId: route?.params?.selectedPodId,
+      selectedDate: formatDate(selectedDate),
+      selectedTime: formatTime(selectedTime),
+      duration,
+      bookingType,
+      totalPrice,
+    };
+
+    if (bookingType === 'Group') {
+      navigation.navigate('GroupInvitation', bookingDetails);
+      return;
+    }
+
+    navigation.navigate('Payment', bookingDetails);
   };
-
-  if (bookingType === 'Group') {
-    navigation.navigate('GroupInvitation', bookingDetails);
-    return;
-  }
-
-  navigation.navigate('Payment', bookingDetails);
-};
-
 
   return (
     <SafeAreaView
-      style={styles.safeArea}
+      style={{
+        flex: 1,
+        backgroundColor: BACKGROUND,
+      }}
       edges={['top', 'left', 'right', 'bottom']}
     >
       <StatusBar
         barStyle="light-content"
-        backgroundColor="#000000"
+        backgroundColor={BACKGROUND}
       />
 
       {/* Header */}
-      <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-            activeOpacity={0.7}
-          >
-            <ArrowLeft size={23} color={WHITE} />
-          </TouchableOpacity>
+      <View className="flex-row items-center px-5 py-4 border-b border-[#303030]">
+        <TouchableOpacity
+          className="w-10 h-10 rounded-full bg-[#171717] items-center justify-center"
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.7}
+        >
+          <ArrowLeft size={23} color={WHITE} />
+        </TouchableOpacity>
 
-          <View style={styles.headerTitleContainer}>
-            <Text style={styles.headerTitle}>Booking details</Text>
-
-            {/* <Text style={styles.headerSubtitle}>FITPOD</Text>    */}
-          </View>
-          <Text style={styles.logoText}>FitPod</Text>
+        <View className="flex-1 ml-4">
+          <Text className="text-white text-base font-bold">
+            Booking details
+          </Text>
         </View>
 
+        <Text className="text-white text-xl font-extrabold">
+          FitPod
+        </Text>
+      </View>
+
       <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        style={{
+          flex: 1,
+          backgroundColor: BACKGROUND,
+        }}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingTop: 20,
+          paddingBottom: 25,
+        }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Introduction */}
-        <View style={styles.intro}>
-          <Text style={styles.stepText}>RESERVATION · 02 / 03</Text>
 
-          <Text style={styles.mainTitle}>
+        {/* Introduction */}
+        <View className="mb-6">
+          <Text className="text-[#B6FF00] text-[10px] font-bold tracking-widest mb-3">
+            RESERVATION · 02 / 03
+          </Text>
+
+          <Text className="text-white text-[27px] font-extrabold">
             Reserve your time.
           </Text>
 
-          <Text style={styles.sectionHint}>
+          <Text className="text-[#A0A0A0] text-sm mt-2">
             Make time for you.
           </Text>
         </View>
 
         {/* Date Selection */}
-        <View style={styles.card}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>
+        <View className="bg-[#171717] rounded-2xl border border-[#303030] p-4 mb-6">
+          <View className="flex-row items-center justify-between mb-5">
+            <Text className="text-white text-lg font-bold">
               Select Date
             </Text>
 
@@ -166,13 +160,13 @@ const handleContinue = () => {
             onDateSelect={selectDate}
           />
 
-          <View style={styles.selectedDateContainer}>
-            <Text style={styles.fieldLabel}>
+          <View className="mt-5">
+            <Text className="text-[#A0A0A0] text-[10px] font-bold tracking-wider mb-2">
               SELECTED DATE
             </Text>
 
-            <View style={styles.dateInput}>
-              <Text style={styles.inputValue}>
+            <View className="h-12 bg-[#222222] border border-[#303030] rounded-xl px-3 flex-row items-center justify-between">
+              <Text className="text-white text-sm">
                 {formatDate(selectedDate)}
               </Text>
 
@@ -182,78 +176,78 @@ const handleContinue = () => {
         </View>
 
         {/* Time Selection */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>
+        <View className="mb-6">
+          <View className="flex-row items-center justify-between mb-4">
+            <Text className="text-white text-lg font-bold">
               Select Time
             </Text>
 
-            <Text style={styles.sectionHint}>
+            <Text className="text-[#A0A0A0] text-xs">
               Available slots
             </Text>
           </View>
 
-          <View style={styles.slotGrid}>
-            {timeSlots && timeSlots.length > 0 ? (
-              timeSlots.map((time, index) => {
+          {timeSlots && timeSlots.length > 0 ? (
+            <View className="flex-row flex-wrap gap-2">
+              {timeSlots.map((time, index) => {
                 const selected = isSelectedTime(time);
 
                 return (
                   <TouchableOpacity
                     key={time.toISOString?.() || index}
-                    style={[
-                      styles.timeSlot,
-                      selected && styles.selectedTimeSlot,
-                    ]}
+                    className={`w-[31%] py-3 rounded-xl items-center justify-center border ${
+                      selected
+                        ? 'bg-[#B6FF00] border-[#B6FF00]'
+                        : 'bg-[#171717] border-[#303030]'
+                    }`}
                     onPress={() => selectTime(time)}
                     activeOpacity={0.8}
                   >
                     <Text
-                      style={[
-                        styles.timeSlotText,
-                        selected && styles.selectedTimeSlotText,
-                      ]}
+                      className={`text-xs font-semibold ${
+                        selected ? 'text-black' : 'text-white'
+                      }`}
                     >
                       {formatTime(time)}
                     </Text>
                   </TouchableOpacity>
                 );
-              })
-            ) : (
-              <Text style={styles.emptyText}>
+              })}
+            </View>
+          ) : (
+            <View className="bg-[#171717] border border-[#303030] rounded-xl p-4">
+              <Text className="text-red-400 text-xs">
                 No available slots for this date and duration.
               </Text>
-            )}
-          </View>
+            </View>
+          )}
         </View>
 
         {/* Duration */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>
-              Session Duration
-            </Text>
-          </View>
+        <View className="mb-6">
+          <Text className="text-white text-lg font-bold mb-4">
+            Session Duration
+          </Text>
 
-          <View style={styles.optionContainer}>
+          <View className="flex-row gap-2">
             {[1, 2, 3].map((hours) => {
               const selected = duration === hours;
 
               return (
                 <TouchableOpacity
                   key={hours}
-                  style={[
-                    styles.option,
-                    selected && styles.activeOption,
-                  ]}
+                  className={`flex-1 py-3 rounded-xl items-center border ${
+                    selected
+                      ? 'bg-[#B6FF00] border-[#B6FF00]'
+                      : 'bg-[#171717] border-[#303030]'
+                  }`}
                   onPress={() => selectDuration(hours)}
                   activeOpacity={0.8}
                 >
                   <Text
-                    style={[
-                      styles.optionText,
-                      selected && styles.activeOptionText,
-                    ]}
+                    className={`text-xs font-semibold ${
+                      selected ? 'text-black' : 'text-white'
+                    }`}
                   >
                     {hours} {hours === 1 ? 'Hour' : 'Hours'}
                   </Text>
@@ -264,32 +258,30 @@ const handleContinue = () => {
         </View>
 
         {/* Booking Type */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>
-              Booking Type
-            </Text>
-          </View>
+        <View className="mb-6">
+          <Text className="text-white text-lg font-bold mb-4">
+            Booking Type
+          </Text>
 
-          <View style={styles.optionContainer}>
+          <View className="flex-row gap-2">
             {['Individual', 'Group'].map((type) => {
               const selected = bookingType === type;
 
               return (
                 <TouchableOpacity
                   key={type}
-                  style={[
-                    styles.bookingTypeOption,
-                    selected && styles.activeOption,
-                  ]}
+                  className={`flex-1 py-3 rounded-xl items-center border ${
+                    selected
+                      ? 'bg-[#B6FF00] border-[#B6FF00]'
+                      : 'bg-[#171717] border-[#303030]'
+                  }`}
                   onPress={() => selectBookingType(type)}
                   activeOpacity={0.8}
                 >
                   <Text
-                    style={[
-                      styles.optionText,
-                      selected && styles.activeOptionText,
-                    ]}
+                    className={`text-xs font-semibold ${
+                      selected ? 'text-black' : 'text-white'
+                    }`}
                   >
                     {type}
                   </Text>
@@ -300,14 +292,14 @@ const handleContinue = () => {
         </View>
 
         {/* Pod Availability */}
-        <View style={styles.section}>
-          <View style={styles.podHeader}>
+        <View className="mb-6">
+          <View className="flex-row items-center justify-between mb-4">
             <View>
-              <Text style={styles.podTitle}>
+              <Text className="text-white text-lg font-bold">
                 Pod Availability
               </Text>
 
-              <Text style={styles.podDescription}>
+              <Text className="text-[#A0A0A0] text-xs mt-1">
                 Your private fitness space
               </Text>
             </View>
@@ -315,174 +307,168 @@ const handleContinue = () => {
             <Clock size={20} color={GREEN} />
           </View>
 
-          <View style={styles.infoCard}>
-            <View style={styles.infoContent}>
-              <Text style={styles.infoTitle}>
-                Selected Session
+          <View className="bg-[#171717] border border-[#303030] rounded-2xl p-4">
+            <Text className="text-white text-sm font-bold mb-4">
+              Selected Session
+            </Text>
+
+            <View className="flex-row justify-between mb-3">
+              <Text className="text-[#A0A0A0] text-xs">
+                Start
               </Text>
 
-              <View style={styles.occupancyLabels}>
-                <Text style={styles.occupancyTime}>
-                  {selectedTime
-                    ? formatTime(selectedTime)
-                    : '--:--'}
-                </Text>
-
-                <Text style={styles.occupancyTime}>
-                  {endTime
-                    ? formatTime(endTime)
-                    : '--:--'}
-                </Text>
-              </View>
-
-              <View style={styles.occupancyBar}>
-                <View
-                  style={[
-                    styles.occupancySegment,
-                    styles.bookedSegment,
-                  ]}
-                />
-
-                <View style={styles.occupancySegment} />
-                <View style={styles.occupancySegment} />
-                <View style={styles.occupancySegment} />
-              </View>
-
-              <Text style={styles.occupancyDescription}>
-                15-minute cleaning and ventilation buffer
+              <Text className="text-white text-xs font-semibold">
+                {selectedTime ? formatTime(selectedTime) : '--:--'}
               </Text>
             </View>
+
+            <View className="flex-row justify-between mb-4">
+              <Text className="text-[#A0A0A0] text-xs">
+                End
+              </Text>
+
+              <Text className="text-white text-xs font-semibold">
+                {endTime ? formatTime(endTime) : '--:--'}
+              </Text>
+            </View>
+
+            <View className="flex-row gap-1 h-2">
+              <View className="flex-1 bg-[#B6FF00] rounded-full" />
+              <View className="flex-1 bg-[#303030] rounded-full" />
+              <View className="flex-1 bg-[#303030] rounded-full" />
+              <View className="flex-1 bg-[#303030] rounded-full" />
+            </View>
+
+            <Text className="text-[#A0A0A0] text-[10px] mt-3">
+              15-minute cleaning and ventilation buffer
+            </Text>
           </View>
         </View>
 
         {/* Booking Information */}
-        <View style={styles.section}>
-          <View style={styles.infoCard}>
-            <View style={styles.infoContent}>
-              <Text style={styles.infoTitle}>
-                Your space. Your pace.
-              </Text>
+        <View className="bg-[#171717] border border-[#303030] rounded-2xl p-4 mb-6">
+          <Text className="text-[#B6FF00] text-sm font-bold mb-2">
+            Your space. Your pace.
+          </Text>
 
-              <Text style={styles.infoDescription}>
-                Enjoy your workout in a private environment.
-                The pod is reserved exclusively for your
-                selected booking.
-              </Text>
-            </View>
-          </View>
+          <Text className="text-[#A0A0A0] text-xs leading-5">
+            Enjoy your workout in a private environment.
+            The pod is reserved exclusively for your selected booking.
+          </Text>
         </View>
 
         {/* Price Summary */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
+        <View className="mb-5">
+          <Text className="text-white text-lg font-bold mb-4">
             Booking Summary
           </Text>
 
-          <View style={styles.card}>
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Date</Text>
-              <Text style={styles.priceValue}>
+          <View className="bg-[#171717] border border-[#303030] rounded-2xl p-4">
+            <View className="flex-row justify-between mb-4">
+              <Text className="text-[#A0A0A0] text-xs">
+                Date
+              </Text>
+
+              <Text className="text-white text-xs font-semibold">
                 {formatDate(selectedDate)}
               </Text>
             </View>
 
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Start Time</Text>
-              <Text style={styles.priceValue}>
+            <View className="flex-row justify-between mb-4">
+              <Text className="text-[#A0A0A0] text-xs">
+                Start Time
+              </Text>
+
+              <Text className="text-white text-xs font-semibold">
                 {selectedTime ? formatTime(selectedTime) : '--'}
               </Text>
             </View>
 
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>End Time</Text>
-              <Text style={styles.priceValue}>
+            <View className="flex-row justify-between mb-4">
+              <Text className="text-[#A0A0A0] text-xs">
+                End Time
+              </Text>
+
+              <Text className="text-white text-xs font-semibold">
                 {endTime ? formatTime(endTime) : '--'}
               </Text>
             </View>
 
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Duration</Text>
-              <Text style={styles.priceValue}>
+            <View className="flex-row justify-between mb-4">
+              <Text className="text-[#A0A0A0] text-xs">
+                Duration
+              </Text>
+
+              <Text className="text-white text-xs font-semibold">
                 {duration} {duration === 1 ? 'Hour' : 'Hours'}
               </Text>
             </View>
 
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Booking Type</Text>
-              <Text style={styles.priceValue}>
+            <View className="flex-row justify-between mb-4">
+              <Text className="text-[#A0A0A0] text-xs">
+                Booking Type
+              </Text>
+
+              <Text className="text-white text-xs font-semibold">
                 {bookingType}
               </Text>
             </View>
 
-            <View style={styles.priceDivider} />
+            <View className="border-t border-[#303030] pt-4 mt-1">
+              <View className="flex-row justify-between items-center">
+                <Text className="text-white text-sm font-bold">
+                  Total Price
+                </Text>
 
-            <View style={styles.priceRow}>
-              <Text style={styles.totalPrice}>Total Price</Text>
+                <Text className="text-[#B6FF00] text-xl font-extrabold">
+                  Rs. {Number(totalPrice || 0).toLocaleString('en-US')}
+                </Text>
+              </View>
 
-              <Text style={styles.totalPrice}>
-                Rs. {Number(totalPrice || 0).toLocaleString('en-US')}
+              <Text className="text-[#A0A0A0] text-[10px] mt-3">
+                Cleaning buffer ends at{' '}
+                {cleaningEndTime
+                  ? formatTime(cleaningEndTime)
+                  : '--'}
               </Text>
             </View>
-
-            <Text style={styles.occupancyDescription}>
-              Cleaning buffer ends at{' '}
-              {cleaningEndTime
-                ? formatTime(cleaningEndTime)
-                : '--'}
-            </Text>
           </View>
         </View>
+
       </ScrollView>
 
       {/* Continue Button */}
-      <View style={styles.bottomContainer}>
+      <View
+        style={{
+          paddingHorizontal: 20,
+          paddingTop: 12,
+          paddingBottom: 12,
+          backgroundColor: BACKGROUND,
+          borderTopWidth: 1,
+          borderTopColor: '#303030',
+        }}
+      >
         <TouchableOpacity
-          style={[
-            styles.continueButton,
-            !selectedSlotIsValid && styles.disabledButton,
-          ]}
+          className={`h-14 rounded-xl flex-row items-center justify-center ${
+            selectedSlotIsValid
+              ? 'bg-[#B6FF00]'
+              : 'bg-[#555555]'
+          }`}
           onPress={handleContinue}
           disabled={!selectedSlotIsValid}
           activeOpacity={0.85}
         >
-          <Text style={styles.continueText}>
+          <Text className="text-black font-bold text-sm">
             Continue to Payment
           </Text>
 
-          <ChevronRight size={20} color="#000000" />
+          <ChevronRight
+            size={20}
+            color={BACKGROUND}
+            style={{ marginLeft: 5 }}
+          />
         </TouchableOpacity>
       </View>
-
-      {/* Bottom Navigation - Same Structure as HomeScreen */}
-      {/* <View style={styles.bottomNavigation}>
-        {navItems.map((item) => {
-          const Icon = item.icon;
-
-          return (
-            <TouchableOpacity
-              key={item.name}
-              style={styles.navItem}
-              onPress={() => goTo(item.name)}
-              activeOpacity={0.8}
-            >
-              <Icon
-                size={21}
-                color={item.active ? GREEN : WHITE}
-                strokeWidth={1.8}
-              />
-
-              <Text
-                style={[
-                  styles.navText,
-                  item.active && styles.activeNavText,
-                ]}
-              >
-                {item.name}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View> */}
     </SafeAreaView>
   );
 };
