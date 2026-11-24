@@ -15,6 +15,7 @@
 import { createMockOrders } from '../models/mockOrders';
 import {
   ACTIVE_STATUSES,
+  FINISHED_STATUSES,
   MAX_CUSTOMER_NAME_LENGTH,
   MAX_NOTE_LENGTH,
   MAX_QUANTITY_PER_ITEM,
@@ -22,6 +23,7 @@ import {
   ORDER_STATUS,
   calculateOrderTotal,
   canTransition,
+  getLastUpdated,
 } from '../models/cafeOrder';
 import { findMenuItemById } from './cafeMenuService';
 
@@ -58,6 +60,15 @@ const cafeOrderService = {
       .filter((o) => ACTIVE_STATUSES.includes(o.status))
       .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     return copy(incoming);
+  },
+
+  /** Finished orders (completed, rejected, cancelled), most recently updated first. */
+  async getOrderHistory() {
+    await wait();
+    const finished = orders
+      .filter((o) => FINISHED_STATUSES.includes(o.status))
+      .sort((a, b) => new Date(getLastUpdated(b)) - new Date(getLastUpdated(a)));
+    return copy(finished);
   },
 
   /**

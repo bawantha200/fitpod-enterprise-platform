@@ -22,3 +22,9 @@ export function formatTimeAgo(isoDate) {
 export function formatClockTime(isoDate) {
   return new Date(isoDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 }
+
+/** ISO date -> "24 Nov, 10:42 AM" (used where older orders need a date too). */
+export function formatDateTime(isoDate) {
+  const date = new Date(isoDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  return `${date}, ${formatClockTime(isoDate)}`;
+}

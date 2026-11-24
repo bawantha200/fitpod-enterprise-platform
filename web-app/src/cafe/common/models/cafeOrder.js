@@ -64,6 +64,13 @@ export const ACTIVE_STATUSES = [
   ORDER_STATUS.READY,
 ];
 
+/** Statuses of orders that are finished ("order history"). */
+export const FINISHED_STATUSES = [
+  ORDER_STATUS.COMPLETED,
+  ORDER_STATUS.REJECTED,
+  ORDER_STATUS.CANCELLED,
+];
+
 /** Which status may follow which. Anything not listed is not allowed. */
 export const ALLOWED_TRANSITIONS = {
   [ORDER_STATUS.PENDING]: [ORDER_STATUS.ACCEPTED, ORDER_STATUS.REJECTED, ORDER_STATUS.CANCELLED],
@@ -88,6 +95,11 @@ export const FORWARD_STEPS = {
 /** True if an order may move from one status to another. */
 export function canTransition(from, to) {
   return ALLOWED_TRANSITIONS[from]?.includes(to) ?? false;
+}
+
+/** When an order last changed status (ISO date string). */
+export function getLastUpdated(order) {
+  return order.statusHistory[order.statusHistory.length - 1].at;
 }
 
 /** Total price of a list of order items. */

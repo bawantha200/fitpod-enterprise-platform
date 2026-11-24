@@ -1,15 +1,15 @@
 /**
- * OrderDetailsPanel.jsx  (View component)
+ * OrderDetailsPanel.jsx  (View component, shared by Admin and Staff)
  * Slide-in panel on the right showing everything about one order:
  * items, notes, total and the full status history (timeline).
  * Read-only - the action buttons stay on the order cards.
  */
 import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
-import OrderStatusBadge from '../../../common/views/components/OrderStatusBadge';
-import { cafeTheme } from '../../../common/constants/cafeTheme';
-import { ORDER_SOURCE_LABELS, ORDER_STATUS_LABELS } from '../../../common/models/cafeOrder';
-import { formatClockTime, formatCurrency } from '../../../common/utils/formatters';
+import OrderStatusBadge from './OrderStatusBadge';
+import { cafeTheme } from '../../constants/cafeTheme';
+import { ORDER_SOURCE_LABELS, ORDER_STATUS_LABELS } from '../../models/cafeOrder';
+import { formatCurrency, formatDateTime } from '../../utils/formatters';
 
 export default function OrderDetailsPanel({ order, onClose }) {
   const closeButtonRef = useRef(null);
@@ -96,7 +96,7 @@ export default function OrderDetailsPanel({ order, onClose }) {
           {order.statusHistory.map((entry, index) => (
             <li key={`${entry.status}-${index}`} className="text-sm">
               <p className="font-medium">{ORDER_STATUS_LABELS[entry.status]}</p>
-              <p className="text-xs text-[#a0a0a0]">{formatClockTime(entry.at)}</p>
+              <p className="text-xs text-[#a0a0a0]">{formatDateTime(entry.at)}</p>
               {entry.note && <p className="text-xs text-[#a0a0a0]">{entry.note}</p>}
             </li>
           ))}

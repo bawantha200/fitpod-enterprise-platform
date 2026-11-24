@@ -11,7 +11,7 @@
 import { RefreshCw } from 'lucide-react';
 import useIncomingOrdersViewModel from '../../viewmodels/useIncomingOrdersViewModel';
 import OrderCard from '../components/OrderCard';
-import OrderDetailsPanel from '../components/OrderDetailsPanel';
+import OrderDetailsPanel from '../../../common/views/components/OrderDetailsPanel';
 import RejectOrderDialog from '../components/RejectOrderDialog';
 import { cafeTheme } from '../../../common/constants/cafeTheme';
 

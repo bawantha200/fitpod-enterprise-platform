@@ -14,6 +14,9 @@ const minutesAgo = (minutes) => new Date(Date.now() - minutes * 60000).toISOStri
 const GREEN_ENERGY = { menuItemId: 'm1', name: 'Green Energy', unitPrice: 650 };
 const ORANGE_BOOST = { menuItemId: 'm2', name: 'Orange Boost', unitPrice: 550 };
 const BERRY_POWER = { menuItemId: 'm3', name: 'Berry Power', unitPrice: 700 };
+const BANANA_OAT = { menuItemId: 'm6', name: 'Banana Oat', unitPrice: 680 };
+const MANGO_PROTEIN = { menuItemId: 'm7', name: 'Mango Protein', unitPrice: 750 };
+const ICED_GREEN_TEA = { menuItemId: 'm9', name: 'Iced Green Tea', unitPrice: 400 };
 
 /** Builds one order and fills in `total` and `createdAt` automatically. */
 function buildOrder({ history, items, ...rest }) {
@@ -73,7 +76,7 @@ export function createMockOrders() {
         { status: ORDER_STATUS.READY, at: minutesAgo(24), note: '' },
       ],
     }),
-    // The two below are NOT "incoming" - they will appear in Order History later.
+    // The finished orders below are NOT "incoming" - they appear in Order History.
     buildOrder({
       id: 'o1037', orderNumber: '1037', source: ORDER_SOURCE.WALK_IN, customerName: 'Sanduni Perera',
       status: ORDER_STATUS.COMPLETED,
@@ -93,6 +96,51 @@ export function createMockOrders() {
       history: [
         { status: ORDER_STATUS.PENDING, at: minutesAgo(90), note: 'Order placed from the mobile app' },
         { status: ORDER_STATUS.REJECTED, at: minutesAgo(88), note: 'Berry Power is out of stock today' },
+      ],
+    }),
+    buildOrder({
+      id: 'o1035', orderNumber: '1035', source: ORDER_SOURCE.MOBILE, customerName: 'Chamari Gunawardena',
+      status: ORDER_STATUS.COMPLETED,
+      items: [{ ...MANGO_PROTEIN, quantity: 1 }, { ...BANANA_OAT, quantity: 1 }],
+      history: [
+        { status: ORDER_STATUS.PENDING, at: minutesAgo(130), note: 'Order placed from the mobile app' },
+        { status: ORDER_STATUS.ACCEPTED, at: minutesAgo(128), note: '' },
+        { status: ORDER_STATUS.PREPARING, at: minutesAgo(125), note: '' },
+        { status: ORDER_STATUS.READY, at: minutesAgo(118), note: '' },
+        { status: ORDER_STATUS.COMPLETED, at: minutesAgo(115), note: '' },
+      ],
+    }),
+    buildOrder({
+      id: 'o1034', orderNumber: '1034', source: ORDER_SOURCE.WALK_IN, customerName: 'Roshan Peiris',
+      status: ORDER_STATUS.COMPLETED, notes: 'Extra ice',
+      items: [{ ...ICED_GREEN_TEA, quantity: 2 }],
+      history: [
+        { status: ORDER_STATUS.PENDING, at: minutesAgo(112), note: 'Walk-in order created by staff' },
+        { status: ORDER_STATUS.ACCEPTED, at: minutesAgo(112), note: '' },
+        { status: ORDER_STATUS.PREPARING, at: minutesAgo(109), note: '' },
+        { status: ORDER_STATUS.READY, at: minutesAgo(103), note: '' },
+        { status: ORDER_STATUS.COMPLETED, at: minutesAgo(100), note: '' },
+      ],
+    }),
+    buildOrder({
+      id: 'o1033', orderNumber: '1033', source: ORDER_SOURCE.MOBILE, customerName: 'Nadeesha Fonseka',
+      status: ORDER_STATUS.CANCELLED,
+      items: [{ ...ORANGE_BOOST, quantity: 1 }],
+      history: [
+        { status: ORDER_STATUS.PENDING, at: minutesAgo(150), note: 'Order placed from the mobile app' },
+        { status: ORDER_STATUS.CANCELLED, at: minutesAgo(148), note: 'Cancelled by the customer' },
+      ],
+    }),
+    buildOrder({
+      id: 'o1031', orderNumber: '1031', source: ORDER_SOURCE.WALK_IN, customerName: 'Pavithra Silva',
+      status: ORDER_STATUS.COMPLETED,
+      items: [{ ...GREEN_ENERGY, quantity: 1 }, { ...ICED_GREEN_TEA, quantity: 1 }],
+      history: [
+        { status: ORDER_STATUS.PENDING, at: minutesAgo(1500), note: 'Walk-in order created by staff' },
+        { status: ORDER_STATUS.ACCEPTED, at: minutesAgo(1500), note: '' },
+        { status: ORDER_STATUS.PREPARING, at: minutesAgo(1497), note: '' },
+        { status: ORDER_STATUS.READY, at: minutesAgo(1491), note: '' },
+        { status: ORDER_STATUS.COMPLETED, at: minutesAgo(1488), note: '' },
       ],
     }),
   ];
