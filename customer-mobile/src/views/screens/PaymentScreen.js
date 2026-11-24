@@ -1,4 +1,6 @@
+
 import React from 'react';
+
 import {
   View,
   Text,
@@ -17,13 +19,9 @@ import {
   CalendarDays,
   Clock,
   CheckCircle2,
-  Home,
-  Coffee,
-  User,
 } from 'lucide-react-native';
 
 import usePaymentViewModel from '../../viewmodels/usePaymentViewModel';
-import styles from '../styles/PaymentScreen.styles';
 
 const GREEN = '#B6FF00';
 const WHITE = '#FFFFFF';
@@ -44,15 +42,6 @@ const PaymentScreen = ({ navigation, route }) => {
     canConfirmPayment,
     selectPaymentMethod,
   } = usePaymentViewModel(route?.params || {});
-
-  // Bottom Navigation Items
-  const navItems = [
-    { name: 'Home', icon: Home, active: false },
-    { name: 'Bookings', icon: CalendarDays, active: true },
-    { name: 'Cafe', icon: Coffee, active: false },
-    { name: 'Wallet', icon: Wallet, active: false },
-    { name: 'Profile', icon: User, active: false },
-  ];
 
   const podName =
     booking.selectedPod?.name || 'FitPod Private Fitness Pod';
@@ -88,272 +77,313 @@ const PaymentScreen = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: '#000000' }}
+      edges={['top', 'left', 'right']}
+    >
       <StatusBar barStyle="light-content" backgroundColor="#000000" />
 
-      {/* Header */}
-      <View style={styles.header}>
+      <View className="flex-1 bg-black">
+
+        {/* Header */}
+        <View className="flex-row items-center justify-between px-5 py-4 border-b border-[#252525]">
+
           <TouchableOpacity
-            style={styles.backButton}
+            className="w-10 h-10 rounded-full bg-[#1C1C1C] items-center justify-center"
             onPress={() => navigation.goBack()}
             activeOpacity={0.7}
           >
             <ArrowLeft size={23} color={WHITE} />
           </TouchableOpacity>
 
-          <View style={styles.headerTitleContainer}>
-            <Text style={styles.headerTitle}>Payments</Text>
-
-            {/* <Text style={styles.headerSubtitle}>FITPOD</Text>    */}
-          </View>
-          <Text style={styles.logoText}>FitPod</Text>
-        </View>
-
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {/* Step indicator */}
-        <Text style={styles.stepText}>RESERVATION · 03 / 03</Text>
-
-        <Text style={styles.mainTitle}>
-          One step to your space.
-        </Text>
-
-        <Text style={styles.subtitle}>
-          Review your booking and choose how you want to pay.
-        </Text>
-
-        {/* Booking Summary */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>BOOKING SUMMARY</Text>
-
-          <View style={styles.summaryCard}>
-            <View style={styles.summaryHeader}>
-              <View style={styles.podIcon}>
-                <Text style={styles.podIconText}>FP</Text>
-              </View>
-
-              <View style={styles.podInfo}>
-                <Text style={styles.podName}>{podName}</Text>
-
-                <Text style={styles.bookingType}>
-                  {bookingType} · {duration} {duration === 1 ? 'hour' : 'hours'}
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.summaryDivider} />
-
-            <View style={styles.detailRow}>
-              <View style={styles.detailLabel}>
-                <CalendarDays size={17} color={GREY} />
-                <Text style={styles.detailLabelText}>Date</Text>
-              </View>
-
-              <Text style={styles.detailValue}>{formattedDate}</Text>
-            </View>
-
-            <View style={styles.detailRow}>
-              <View style={styles.detailLabel}>
-                <Clock size={17} color={GREY} />
-                <Text style={styles.detailLabelText}>Time</Text>
-              </View>
-
-              <Text style={styles.detailValue}>
-                {selectedTime} – {endTime}
-              </Text>
-            </View>
-
-            <View style={styles.summaryDivider} />
-
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>
-                {duration} {duration === 1 ? 'hour' : 'hours'} × Rs. {hourlyRate.toLocaleString('en-LK')}
-              </Text>
-
-              <Text style={styles.priceValue}>
-                Rs. {totalPrice.toLocaleString('en-LK')}
-              </Text>
-            </View>
-
-            <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>TOTAL</Text>
-
-              <Text style={styles.totalAmount}>
-                Rs. {totalPrice.toLocaleString('en-LK')}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Payment Methods */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>PAYMENT METHOD</Text>
-
-          {/* PayHere */}
-          <TouchableOpacity
-            style={[
-              styles.paymentOption,
-              paymentMethod === 'PAYHERE' && styles.selectedPaymentOption,
-            ]}
-            onPress={() => selectPaymentMethod('PAYHERE')}
-            activeOpacity={0.8}
-          >
-            <View style={styles.paymentIcon}>
-              <CreditCard size={22} color={WHITE} />
-            </View>
-
-            <View style={styles.paymentInfo}>
-              <Text style={styles.paymentTitle}>
-                PayHere Card Payment
-              </Text>
-
-              <Text style={styles.paymentDescription}>
-                Pay securely by debit or credit card
-              </Text>
-            </View>
-
-            <View
-              style={[
-                styles.radioOuter,
-                paymentMethod === 'PAYHERE' && styles.radioOuterSelected,
-              ]}
-            >
-              {paymentMethod === 'PAYHERE' && (
-                <View style={styles.radioInner} />
-              )}
-            </View>
-          </TouchableOpacity>
-
-          {/* Wallet */}
-          <TouchableOpacity
-            style={[
-              styles.paymentOption,
-              paymentMethod === 'WALLET' && styles.selectedPaymentOption,
-            ]}
-            onPress={() => selectPaymentMethod('WALLET')}
-            activeOpacity={0.8}
-          >
-            <View style={styles.paymentIcon}>
-              <Wallet size={22} color={GREEN} />
-            </View>
-
-            <View style={styles.paymentInfo}>
-              <Text style={styles.paymentTitle}>In-App Wallet</Text>
-
-              <Text style={styles.paymentDescription}>
-                Balance: Rs. {walletBalance.toLocaleString('en-LK')}
-              </Text>
-
-              {!hasSufficientBalance && (
-                <Text style={styles.insufficientText}>
-                  Insufficient balance
-                </Text>
-              )}
-            </View>
-
-            <View
-              style={[
-                styles.radioOuter,
-                paymentMethod === 'WALLET' && styles.radioOuterSelected,
-              ]}
-            >
-              {paymentMethod === 'WALLET' && (
-                <View style={styles.radioInner} />
-              )}
-            </View>
-          </TouchableOpacity>
-
-          {/* Wallet remaining balance */}
-          {paymentMethod === 'WALLET' && hasSufficientBalance && (
-            <View style={styles.remainingBalanceCard}>
-              <Text style={styles.remainingLabel}>
-                Wallet balance after payment
-              </Text>
-
-              <Text style={styles.remainingAmount}>
-                Rs. {remainingBalance.toLocaleString('en-LK')}
-              </Text>
-            </View>
-          )}
-        </View>
-
-        {/* Booking Hold Information */}
-        <View style={styles.holdCard}>
-          <View style={styles.holdIcon}>
-            <Clock size={19} color={GREEN} />
-          </View>
-
-          <View style={styles.holdInfo}>
-            <Text style={styles.holdTitle}>
-              Temporary booking hold
-            </Text>
-
-            <Text style={styles.holdDescription}>
-              Your selected time will be held for 5 minutes after the
-              booking service confirms the temporary reservation.
+          <View className="flex-1 items-center">
+            <Text className="text-white text-lg font-bold">
+              Payments
             </Text>
           </View>
-        </View>
-        </ScrollView>
 
-        {/* Confirm Button */}
-        <View style={styles.bottomContainer}>
-          <TouchableOpacity
-          style={[
-            styles.confirmButton,
-            !canConfirmPayment && styles.confirmButtonDisabled,
-          ]}
-          onPress={handleConfirmPayment}
-          activeOpacity={0.85}
+          <Text className="text-[#B6FF00] text-base font-extrabold">
+            FitPod
+          </Text>
+        </View>
+
+        <ScrollView
+          style={{ flex: 1, backgroundColor: '#000000' }}
+          contentContainerStyle={{
+            paddingHorizontal: 20,
+            paddingTop: 22,
+            paddingBottom: 20,
+          }}
+          showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.confirmButtonText}>
-            Confirm Payment
+
+          {/* Step Indicator */}
+          <Text className="text-[#B6FF00] text-xs font-bold tracking-widest mb-3">
+            RESERVATION · 03 / 03
           </Text>
 
-          <CheckCircle2 size={20} color="#000000" />
-        </TouchableOpacity>
+          <Text className="text-white text-3xl font-extrabold mb-2">
+            One step to your space.
+          </Text>
 
-        </View>
-        
+          <Text className="text-[#999999] text-sm leading-6 mb-7">
+            Review your booking and choose how you want to pay.
+          </Text>
 
-        <Text style={styles.disclaimer}>
-          Only the pod rental is included. Cafe items are not included
-          in this payment.
-        </Text>
-      
+          {/* Booking Summary */}
+          <View className="mb-7">
 
-      {/* Bottom Navigation - Same Structure as HomeScreen */}
-      {/* <View style={styles.bottomNavigation}>
-        {navItems.map((item) => {
-          const Icon = item.icon;
+            <Text className="text-white text-xs font-bold tracking-widest mb-4">
+              BOOKING SUMMARY
+            </Text>
 
-          return (
+            <View className="bg-[#151515] border border-[#303030] rounded-2xl p-4">
+
+              {/* Pod Information */}
+              <View className="flex-row items-center mb-4">
+
+                <View className="w-12 h-12 rounded-xl bg-[#252525] items-center justify-center mr-3">
+                  <Text className="text-[#B6FF00] text-base font-extrabold">
+                    FP
+                  </Text>
+                </View>
+
+                <View className="flex-1">
+                  <Text className="text-white text-base font-bold">
+                    {podName}
+                  </Text>
+
+                  <Text className="text-[#999999] text-xs mt-1">
+                    {bookingType} · {duration} {duration === 1 ? 'hour' : 'hours'}
+                  </Text>
+                </View>
+
+              </View>
+
+              <View className="h-px bg-[#303030] mb-4" />
+
+              {/* Date */}
+              <View className="flex-row items-center justify-between mb-4">
+
+                <View className="flex-row items-center">
+                  <CalendarDays size={17} color={GREY} />
+                  <Text className="text-[#999999] text-sm ml-2">
+                    Date
+                  </Text>
+                </View>
+
+                <Text className="text-white text-sm font-semibold">
+                  {formattedDate}
+                </Text>
+
+              </View>
+
+              {/* Time */}
+              <View className="flex-row items-center justify-between mb-4">
+
+                <View className="flex-row items-center">
+                  <Clock size={17} color={GREY} />
+                  <Text className="text-[#999999] text-sm ml-2">
+                    Time
+                  </Text>
+                </View>
+
+                <Text className="text-white text-sm font-semibold">
+                  {selectedTime} – {endTime}
+                </Text>
+
+              </View>
+
+              <View className="h-px bg-[#303030] mb-4" />
+
+              {/* Price */}
+              <View className="flex-row items-center justify-between mb-4">
+
+                <Text className="text-[#999999] text-sm">
+                  {duration} {duration === 1 ? 'hour' : 'hours'} × Rs. {hourlyRate.toLocaleString('en-LK')}
+                </Text>
+
+                <Text className="text-white text-sm font-semibold">
+                  Rs. {totalPrice.toLocaleString('en-LK')}
+                </Text>
+
+              </View>
+
+              {/* Total */}
+              <View className="flex-row items-center justify-between">
+                <Text className="text-white text-sm font-bold tracking-widest">
+                  TOTAL
+                </Text>
+
+                <Text className="text-[#B6FF00] text-xl font-extrabold">
+                  Rs. {totalPrice.toLocaleString('en-LK')}
+                </Text>
+              </View>
+
+            </View>
+          </View>
+
+          {/* Payment Methods */}
+          <View className="mb-7">
+
+            <Text className="text-white text-xs font-bold tracking-widest mb-4">
+              PAYMENT METHOD
+            </Text>
+
+            {/* PayHere */}
             <TouchableOpacity
-              key={item.name}
-              style={styles.navItem}
-              onPress={() => goTo(item.name)}
+              className={`flex-row items-center border rounded-2xl p-4 mb-3 ${
+                paymentMethod === 'PAYHERE'
+                  ? 'border-[#B6FF00] bg-[#191F0C]'
+                  : 'border-[#303030] bg-[#151515]'
+              }`}
+              onPress={() => selectPaymentMethod('PAYHERE')}
               activeOpacity={0.8}
             >
-              <Icon
-                size={21}
-                color={item.active ? GREEN : WHITE}
-                strokeWidth={1.8}
-              />
 
-              <Text
-                style={[
-                  styles.navText,
-                  item.active && styles.activeNavText,
-                ]}
-              >
-                {item.name}
-              </Text>
+              <View className="w-11 h-11 rounded-xl bg-[#252525] items-center justify-center mr-3">
+                <CreditCard size={22} color={WHITE} />
+              </View>
+
+              <View className="flex-1">
+                <Text className="text-white text-sm font-bold">
+                  PayHere Card Payment
+                </Text>
+
+                <Text className="text-[#999999] text-xs mt-1">
+                  Pay securely by debit or credit card
+                </Text>
+              </View>
+
+              <View className={`w-5 h-5 rounded-full border-2 items-center justify-center ${
+                paymentMethod === 'PAYHERE'
+                  ? 'border-[#B6FF00]'
+                  : 'border-[#777777]'
+              }`}>
+                {paymentMethod === 'PAYHERE' && (
+                  <View className="w-2.5 h-2.5 rounded-full bg-[#B6FF00]" />
+                )}
+              </View>
+
             </TouchableOpacity>
-          );
-        })}
-      </View> */}
+
+            {/* Wallet */}
+            <TouchableOpacity
+              className={`flex-row items-center border rounded-2xl p-4 ${
+                paymentMethod === 'WALLET'
+                  ? 'border-[#B6FF00] bg-[#191F0C]'
+                  : 'border-[#303030] bg-[#151515]'
+              }`}
+              onPress={() => selectPaymentMethod('WALLET')}
+              activeOpacity={0.8}
+            >
+
+              <View className="w-11 h-11 rounded-xl bg-[#252525] items-center justify-center mr-3">
+                <Wallet size={22} color={GREEN} />
+              </View>
+
+              <View className="flex-1">
+                <Text className="text-white text-sm font-bold">
+                  In-App Wallet
+                </Text>
+
+                <Text className="text-[#999999] text-xs mt-1">
+                  Balance: Rs. {walletBalance.toLocaleString('en-LK')}
+                </Text>
+
+                {!hasSufficientBalance && (
+                  <Text className="text-red-400 text-xs mt-2">
+                    Insufficient balance
+                  </Text>
+                )}
+              </View>
+
+              <View className={`w-5 h-5 rounded-full border-2 items-center justify-center ${
+                paymentMethod === 'WALLET'
+                  ? 'border-[#B6FF00]'
+                  : 'border-[#777777]'
+              }`}>
+                {paymentMethod === 'WALLET' && (
+                  <View className="w-2.5 h-2.5 rounded-full bg-[#B6FF00]" />
+                )}
+              </View>
+
+            </TouchableOpacity>
+
+            {/* Remaining Balance */}
+            {paymentMethod === 'WALLET' && hasSufficientBalance && (
+              <View className="bg-[#151515] border border-[#303030] rounded-xl p-4 mt-3">
+
+                <Text className="text-[#999999] text-xs mb-2">
+                  Wallet balance after payment
+                </Text>
+
+                <Text className="text-[#B6FF00] text-lg font-extrabold">
+                  Rs. {remainingBalance.toLocaleString('en-LK')}
+                </Text>
+
+              </View>
+            )}
+
+          </View>
+
+          {/* Booking Hold Information */}
+          <View className="flex-row bg-[#151515] border border-[#303030] rounded-2xl p-4 mb-3">
+
+            <View className="w-10 h-10 rounded-xl bg-[#252525] items-center justify-center mr-3">
+              <Clock size={19} color={GREEN} />
+            </View>
+
+            <View className="flex-1">
+              <Text className="text-white text-sm font-bold mb-2">
+                Temporary booking hold
+              </Text>
+
+              <Text className="text-[#999999] text-xs leading-5">
+                Your selected time will be held for 5 minutes after the
+                booking service confirms the temporary reservation.
+              </Text>
+            </View>
+
+          </View>
+
+        </ScrollView>
+
+        {/* Bottom Confirm Button */}
+        <View
+          style={{
+            paddingHorizontal: 20,
+            paddingTop: 12,
+            paddingBottom: 8,
+            backgroundColor: '#000000',
+            borderTopWidth: 1,
+            borderTopColor: '#303030',
+          }}
+        >
+
+          <TouchableOpacity
+            className={`h-14 rounded-xl flex-row items-center justify-center ${
+              canConfirmPayment ? 'bg-[#B6FF00]' : 'bg-[#555555]'
+            }`}
+            onPress={handleConfirmPayment}
+            activeOpacity={0.85}
+            disabled={!canConfirmPayment}
+          >
+            <Text className="text-black text-sm font-extrabold mr-2">
+              Confirm Payment
+            </Text>
+
+            <CheckCircle2 size={20} color="#000000" />
+          </TouchableOpacity>
+
+          <Text className="text-[#777777] text-[10px] text-center leading-4 mt-3">
+            Only the pod rental is included. Cafe items are not included
+            in this payment.
+          </Text>
+
+        </View>
+
+      </View>
     </SafeAreaView>
   );
 };
