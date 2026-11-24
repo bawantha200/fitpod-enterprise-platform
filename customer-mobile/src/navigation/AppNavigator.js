@@ -8,6 +8,8 @@ import Navbar from '../views/components/NavigationBar';
 
 // Screens
 import LoginScreen from '../views/screens/LoginScreen';
+import RegistrationScreen from '../views/screens/RegistrationScreen';
+
 import HomeScreen from '../views/screens/HomeScreen';
 import BookingScreen from '../views/screens/BookingScreen';
 import PodDetailsScreen from '../views/screens/PodDetailsScreen';
@@ -57,13 +59,19 @@ const AppNavigator = () => {
         headerShown: false,
       }}
     >
-      {/* Login screen - first screen when app opens */}
+      {/* Login Screen */}
       <Stack.Screen
         name="Login"
         component={LoginScreen}
       />
 
-      {/* Main application with bottom navigation */}
+      {/* Registration Screen */}
+      <Stack.Screen
+        name="Registration"
+        component={RegistrationScreen}
+      />
+
+      {/* Main Application */}
       <Stack.Screen
         name="MainTabs"
         component={MainTabs}
