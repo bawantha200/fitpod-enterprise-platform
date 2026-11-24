@@ -2,6 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const pool = require("./config/db");
 
+const walletRoutes = require("./routes/walletRoutes");
+const bookingRoutes = require("./routes/bookingRoutes");
+
 const notFoundMiddleware = require("./middleware/notFoundMiddleware");
 const errorMiddleware = require("./middleware/errorMiddleware");
 
@@ -10,6 +13,10 @@ const app = express();
 // Common middleware
 app.use(cors());
 app.use(express.json());
+app.use((req, res, next) => {
+  console.log('Request Body:', req.body);
+  next();
+});
 app.use(express.urlencoded({ extended: true }));
 
 // Welcome route
@@ -36,6 +43,10 @@ app.get("/api/health", async (req, res, next) => {
     next(error);
   }
 });
+
+// API routes
+app.use("/api/wallet", walletRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 // Error handling (keep these at the bottom)
 app.use(notFoundMiddleware);
