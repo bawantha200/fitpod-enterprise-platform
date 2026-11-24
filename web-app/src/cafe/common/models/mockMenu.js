@@ -7,7 +7,9 @@
  * step) will add, edit and remove items in this same data.
  *
  * Menu item shape:
- *   { id, name, categoryId, price (Rs.), sizeMl, description, isAvailable }
+ *   { id, name, categoryId, price (Rs.), sizeMl, description, isAvailable, isRemoved }
+ *   isAvailable = shown greyed out when false; isRemoved = hidden everywhere
+ *   (an admin "Remove"; the item is kept so old orders stay valid).
  * ------------------------------------------------------------------
  */
 
@@ -31,6 +33,6 @@ export function createMockMenu() {
       { id: 'm9', name: 'Iced Green Tea', categoryId: 'c3', price: 400, sizeMl: 350, description: 'Unsweetened iced green tea.', isAvailable: true },
       { id: 'm10', name: 'Coconut Water', categoryId: 'c3', price: 380, sizeMl: 330, description: 'Fresh king coconut water.', isAvailable: true },
       { id: 'm11', name: 'Avocado Shake', categoryId: 'c2', price: 720, sizeMl: 350, description: 'Creamy avocado shake.', isAvailable: false },
-    ],
+    ].map((item) => ({ ...item, isRemoved: false })),
   };
 }
