@@ -5,7 +5,7 @@ const rateLimit = require("express-rate-limit");
 const pool = require("./config/db");
 
 const walletRoutes = require("./routes/walletRoutes");
-const authRoutes = require("./routes/authRoutes");
+const bookingRoutes = require("./routes/bookingRoutes");
 
 const notFoundMiddleware = require("./middleware/notFoundMiddleware");
 const errorMiddleware = require("./middleware/errorMiddleware");
@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.originalUrl}`);
+  console.log('Request Body:', req.body);
   next();
 });
 
@@ -77,6 +77,7 @@ app.get("/api/health", async (req, res, next) => {
 
 // API Routes
 app.use("/api/wallet", walletRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 app.use("/api/auth", authLimiter, authRoutes); 
 

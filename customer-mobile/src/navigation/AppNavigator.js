@@ -18,6 +18,7 @@ import PaymentScreen from '../views/screens/PaymentScreen';
 import WalletScreen from '../views/screens/WalletScreen';
 import ReviewPaymentScreen from '../views/screens/ReviewPaymentScreen';
 import PaymentSuccessScreen from '../views/screens/PaymentSuccessScreen';
+import AccessPassScreen from '../views/screens/AccessPassScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -97,10 +98,15 @@ const AppNavigator = () => {
         component={PaymentScreen}
       />
 
+      <Stack.Screen name="AccessPass" component={AccessPassScreen} />
+
+      {/* Wallet top-up flow (no bottom nav bar) */}
       <Stack.Screen
         name="ReviewPayment"
         component={ReviewPaymentScreen}
       />
+
+
 
       <Stack.Screen
         name="PaymentSuccess"
