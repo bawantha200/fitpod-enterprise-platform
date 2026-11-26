@@ -4,7 +4,7 @@
  * Administrator: cafe reports with charts.
  * Covers the use cases: View Daily Order Report and View Cafe Sales
  * Summary - and goes further: weekly, monthly and custom periods,
- * category and order-type filters, charts, and CSV download.
+ * category and order-type filters, charts, and CSV, PDF and Word download.
  * All logic is in useReportsViewModel - this file only draws.
  * ------------------------------------------------------------------
  */
@@ -37,17 +37,31 @@ export default function AdminReportsPage() {
           <h1 className={cafeTheme.title}>Reports</h1>
           <p className={`${cafeTheme.muted} mt-1`}>Sales and orders for any day, week, month or custom period.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button type="button" className={cafeTheme.buttonGhost} onClick={vm.reload} disabled={vm.isLoading}>
             <RefreshCw size={16} aria-hidden="true" />
             Refresh
           </button>
-          <button type="button" className={cafeTheme.buttonPrimary} onClick={vm.downloadCsv} disabled={!report}>
+          <button type="button" className={cafeTheme.buttonPrimary} onClick={vm.downloadCsv} disabled={!report || !!vm.exporting}>
             <Download size={16} aria-hidden="true" />
             Download CSV
           </button>
+          <button type="button" className={cafeTheme.buttonPrimary} onClick={vm.downloadPdf} disabled={!report || !!vm.exporting}>
+            <Download size={16} aria-hidden="true" />
+            {vm.exporting === 'pdf' ? 'Preparing PDF...' : 'Download PDF'}
+          </button>
+          <button type="button" className={cafeTheme.buttonPrimary} onClick={vm.downloadDocx} disabled={!report || !!vm.exporting}>
+            <Download size={16} aria-hidden="true" />
+            {vm.exporting === 'docx' ? 'Preparing Word file...' : 'Download Word'}
+          </button>
         </div>
       </div>
+
+      {vm.exportError && (
+        <p role="alert" className="mt-4 rounded-lg border border-[#ff6b6b]/40 bg-[#ff6b6b]/10 p-3 text-sm text-[#ff6b6b]">
+          {vm.exportError}
+        </p>
+      )}
 
       <div className="mt-6">
         <ReportFilters vm={vm} />

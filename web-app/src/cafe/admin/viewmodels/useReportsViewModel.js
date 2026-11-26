@@ -6,7 +6,7 @@
  *   - the category and order-type filters
  *   - loading the report whenever any of those change
  *   - Previous / Next period buttons
- *   - downloading the report as CSV
+ *   - downloading the report as CSV, PDF or Word
  * The page file only draws what this hook returns.
  * ------------------------------------------------------------------
  */
@@ -17,6 +17,8 @@ import { PERIOD_TYPES, resolvePeriod } from '../../common/models/cafeReport';
 import { ORDER_SOURCE_FILTERS } from '../../common/constants/cafeOrderFilters';
 import { addDays, parseDateInput, toDateInputValue } from '../../common/utils/dateUtils';
 import { exportReportCsv } from '../../common/utils/reportCsv';
+import { exportReportPdf } from '../../common/utils/reportPdf';
+import { exportReportDocx } from '../../common/utils/reportDocx';
 
 export const ALL_CATEGORIES = 'all';
 
@@ -38,6 +40,10 @@ export default function useReportsViewModel() {
   const [categories, setCategories] = useState([]);
   const [reloadCount, setReloadCount] = useState(0);
   const [loaded, setLoaded] = useState({ key: null, report: null, error: '' });
+
+  // Which download is being prepared right now ('pdf' | 'docx' | null).
+  const [exporting, setExporting] = useState(null);
+  const [exportError, setExportError] = useState('');
 
   // The category list for the filter drop-down.
   useEffect(() => {
@@ -112,6 +118,22 @@ export default function useReportsViewModel() {
     if (isCurrent && loaded.report) exportReportCsv(loaded.report);
   };
 
+  /** Prepares a PDF or Word file. It takes a moment, so the buttons show "Preparing...". */
+  const runExport = async (kind, fileLabel, exporter) => {
+    if (!isCurrent || !loaded.report || exporting) return;
+    setExporting(kind);
+    setExportError('');
+    try {
+      await exporter(loaded.report);
+    } catch {
+      setExportError(`Could not create the ${fileLabel} file. Please try again.`);
+    } finally {
+      setExporting(null);
+    }
+  };
+  const downloadPdf = () => runExport('pdf', 'PDF', exportReportPdf);
+  const downloadDocx = () => runExport('docx', 'Word', exportReportDocx);
+
   return {
     // what is picked
     periodType,
@@ -132,6 +154,8 @@ export default function useReportsViewModel() {
     isLoading,
     canStep,
     canGoNext,
+    exporting,
+    exportError,
     // actions
     setPeriodType,
     setDateValue,
@@ -144,5 +168,7 @@ export default function useReportsViewModel() {
     stepPeriod,
     reload,
     downloadCsv,
+    downloadPdf,
+    downloadDocx,
   };
 }

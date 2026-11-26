@@ -1,27 +1,10 @@
 /**
  * chartUtils.js
- * Small maths helpers for drawing the charts.
+ * Helpers for drawing the on-screen SVG charts. The axis maths lives in
+ * common/utils/chartMath.js (the PDF export uses it too) and is
+ * re-exported here so the charts have one place to import from.
  */
-
-/**
- * Picks a tidy top value and tick marks for a chart axis.
- * Example: a highest value of 12,340 gives ticks 0, 4000, 8000, 12000, 16000.
- */
-export function niceScale(maxValue, tickTarget = 4) {
-  if (!(maxValue > 0)) return { max: 1, ticks: [0, 1] };
-  const rough = maxValue / tickTarget;
-  const magnitude = 10 ** Math.floor(Math.log10(rough));
-  const step = [1, 2, 2.5, 5, 10].map((factor) => factor * magnitude).find((candidate) => candidate >= rough);
-  const max = step * Math.ceil(maxValue / step - 1e-9);
-  const ticks = [];
-  for (let value = 0; value <= max + 1e-9; value += step) ticks.push(Math.round(value * 100) / 100);
-  return { max, ticks };
-}
-
-/** 950 -> "950", 12500 -> "12.5k" (short numbers for axis labels). */
-export function formatCompact(value) {
-  return value >= 1000 ? `${Math.round(value / 100) / 10}k` : String(value);
-}
+export { formatCompact, niceScale } from '../../../../common/utils/chartMath';
 
 /** Point on a circle. Angle 0 is "3 o'clock"; we start the donut at the top (-PI/2). */
 export function polarPoint(centerX, centerY, radius, angle) {
