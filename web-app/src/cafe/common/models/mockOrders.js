@@ -11,12 +11,12 @@ import { ORDER_SOURCE, ORDER_STATUS, calculateOrderTotal } from './cafeOrder';
 
 const minutesAgo = (minutes) => new Date(Date.now() - minutes * 60000).toISOString();
 
-const GREEN_ENERGY = { menuItemId: 'm1', name: 'Green Energy', unitPrice: 650 };
-const ORANGE_BOOST = { menuItemId: 'm2', name: 'Orange Boost', unitPrice: 550 };
-const BERRY_POWER = { menuItemId: 'm3', name: 'Berry Power', unitPrice: 700 };
-const BANANA_OAT = { menuItemId: 'm6', name: 'Banana Oat', unitPrice: 680 };
-const MANGO_PROTEIN = { menuItemId: 'm7', name: 'Mango Protein', unitPrice: 750 };
-const ICED_GREEN_TEA = { menuItemId: 'm9', name: 'Iced Green Tea', unitPrice: 400 };
+const GREEN_ENERGY = { menuItemId: 'm1', name: 'Green Energy', unitPrice: 650, categoryId: 'c2' };
+const ORANGE_BOOST = { menuItemId: 'm2', name: 'Orange Boost', unitPrice: 550, categoryId: 'c1' };
+const BERRY_POWER = { menuItemId: 'm3', name: 'Berry Power', unitPrice: 700, categoryId: 'c2' };
+const BANANA_OAT = { menuItemId: 'm6', name: 'Banana Oat', unitPrice: 680, categoryId: 'c2' };
+const MANGO_PROTEIN = { menuItemId: 'm7', name: 'Mango Protein', unitPrice: 750, categoryId: 'c2' };
+const ICED_GREEN_TEA = { menuItemId: 'm9', name: 'Iced Green Tea', unitPrice: 400, categoryId: 'c3' };
 
 /** Builds one order and fills in `total` and `createdAt` automatically. */
 function buildOrder({ history, items, ...rest }) {

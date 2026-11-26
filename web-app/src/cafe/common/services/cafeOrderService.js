@@ -112,7 +112,7 @@ const cafeOrderService = {
       const menuItem = findMenuItemById(menuItemId);
       if (!menuItem) throw new Error('One of the items is no longer on the menu.');
       if (!menuItem.isAvailable) throw new Error(`${menuItem.name} is currently unavailable.`);
-      return { menuItemId, name: menuItem.name, unitPrice: menuItem.price, quantity };
+      return { menuItemId, name: menuItem.name, unitPrice: menuItem.price, categoryId: menuItem.categoryId, quantity };
     });
 
     const now = new Date().toISOString();

@@ -10,7 +10,7 @@
  *   id, orderNumber,            // id is internal, orderNumber is shown to people
  *   source,                     // ORDER_SOURCE.MOBILE or ORDER_SOURCE.WALK_IN
  *   customerName,
- *   items: [{ menuItemId, name, quantity, unitPrice }],
+ *   items: [{ menuItemId, name, quantity, unitPrice, categoryId }],  // a SNAPSHOT of the item when ordered
  *   notes,                      // customer / staff note ('' if none)
  *   total,                      // sum of quantity * unitPrice
  *   status,                     // one of ORDER_STATUS
