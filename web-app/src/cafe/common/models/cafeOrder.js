@@ -102,6 +102,16 @@ export function getLastUpdated(order) {
   return order.statusHistory[order.statusHistory.length - 1].at;
 }
 
+/** True if an order matches what was typed in a search box (order number or customer name). */
+export function orderMatchesSearch(order, searchText) {
+  const search = searchText.trim().toLowerCase().replace(/^#/, ''); // "#1037" works too
+  return (
+    search === '' ||
+    order.orderNumber.includes(search) ||
+    order.customerName.toLowerCase().includes(search)
+  );
+}
+
 /** Total price of a list of order items. */
 export function calculateOrderTotal(items) {
   return items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);

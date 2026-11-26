@@ -10,19 +10,14 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import cafeOrderService from '../../common/services/cafeOrderService';
-import { FINISHED_STATUSES, ORDER_SOURCE, ORDER_STATUS } from '../../common/models/cafeOrder';
+import { FINISHED_STATUSES, ORDER_STATUS, orderMatchesSearch } from '../../common/models/cafeOrder';
+import { ORDER_SOURCE_FILTERS } from '../../common/constants/cafeOrderFilters';
 
 export const HISTORY_STATUS_FILTERS = [
   { key: 'all', label: 'All finished', statuses: FINISHED_STATUSES },
   { key: 'completed', label: 'Completed', statuses: [ORDER_STATUS.COMPLETED] },
   { key: 'rejected', label: 'Rejected', statuses: [ORDER_STATUS.REJECTED] },
   { key: 'cancelled', label: 'Cancelled', statuses: [ORDER_STATUS.CANCELLED] },
-];
-
-export const HISTORY_SOURCE_FILTERS = [
-  { key: 'all', label: 'All types', source: null },
-  { key: 'mobile', label: 'Mobile pre-orders', source: ORDER_SOURCE.MOBILE },
-  { key: 'walk_in', label: 'Walk-in orders', source: ORDER_SOURCE.WALK_IN },
 ];
 
 export default function useOrderHistoryViewModel() {
@@ -77,16 +72,13 @@ export default function useOrderHistoryViewModel() {
 
   const visibleOrders = useMemo(() => {
     const statusFilter = HISTORY_STATUS_FILTERS.find((f) => f.key === statusFilterKey) ?? HISTORY_STATUS_FILTERS[0];
-    const sourceFilter = HISTORY_SOURCE_FILTERS.find((f) => f.key === sourceFilterKey) ?? HISTORY_SOURCE_FILTERS[0];
-    const search = searchText.trim().toLowerCase().replace(/^#/, ''); // "#1037" works too
+    const sourceFilter = ORDER_SOURCE_FILTERS.find((f) => f.key === sourceFilterKey) ?? ORDER_SOURCE_FILTERS[0];
 
     return orders.filter(
       (order) =>
         statusFilter.statuses.includes(order.status) &&
         (sourceFilter.source === null || order.source === sourceFilter.source) &&
-        (search === '' ||
-          order.orderNumber.includes(search) ||
-          order.customerName.toLowerCase().includes(search))
+        orderMatchesSearch(order, searchText)
     );
   }, [orders, statusFilterKey, sourceFilterKey, searchText]);
 

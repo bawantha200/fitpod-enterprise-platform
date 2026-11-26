@@ -62,6 +62,15 @@ const cafeOrderService = {
     return copy(incoming);
   },
 
+  /** Every order, in any status, newest first (used by the Admin "All Orders" page). */
+  async getAllOrders() {
+    await wait();
+    const sorted = [...orders].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt) || Number(b.orderNumber) - Number(a.orderNumber)
+    );
+    return copy(sorted);
+  },
+
   /** Finished orders (completed, rejected, cancelled), most recently updated first. */
   async getOrderHistory() {
     await wait();
