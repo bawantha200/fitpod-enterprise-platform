@@ -6,6 +6,7 @@ const pool = require("./config/db");
 
 const walletRoutes = require("./routes/walletRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const notFoundMiddleware = require("./middleware/notFoundMiddleware");
 const errorMiddleware = require("./middleware/errorMiddleware");
