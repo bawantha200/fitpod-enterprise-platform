@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
+import Text from '../components/AppText';
 import {
   View,
-  Text,
   ScrollView,
   TouchableOpacity,
   StatusBar,

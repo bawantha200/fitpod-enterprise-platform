@@ -14,7 +14,17 @@ const errorResponse = (res, message, statusCode = 400, errors = null) => {
   });
 };
 
+// backend/src/utils/apiResponse.js
+const apiResponse = (success, message, data = null) => ({
+  success,
+  message,
+  data,
+});
+
+
+
 module.exports = {
   successResponse,
   errorResponse,
+  apiResponse,
 };

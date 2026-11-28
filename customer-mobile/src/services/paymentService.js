@@ -57,9 +57,16 @@ export const startPayment = async ({ amount }) => {
 };
 
 const openPayHere = (paymentObject) => {
-  // Loaded here (not at the top) so the app still opens in Expo Go
-  // when PAYMENT_MODE is 'demo'.
+  // PayHere is a native module and is unavailable in Expo Go. Load it only
+  // when a real payment is started so demo mode can still run there.
+  const { NativeModules } = require('react-native');
   const PayHere = require('@payhere/payhere-mobilesdk-reactnative').default;
+
+  if (!NativeModules.PayhereOfficial || typeof PayHere?.startPayment !== 'function') {
+    throw new Error(
+      'PayHere is not available in this app build. Open the app in a PayHere-enabled development build, not Expo Go.'
+    );
+  }
 
   return new Promise((resolve) => {
     PayHere.startPayment(
